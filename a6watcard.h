@@ -12,6 +12,8 @@ class WATCard {
     void deposit( unsigned int amount );
     void withdraw( unsigned int amount );
     unsigned int getBalance();
+  private:
+    unsigned int watcardBalance;
 };
 
 #endif
