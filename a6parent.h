@@ -7,8 +7,14 @@ _Cormonitor Printer;
 
 _Task Parent {
     void main();
+
+    Printer& printer;
+    Bank& bank;
+    const unsigned int numberOfStudents;
+    const unsigned int parentalDelay;
+
   public:
-    Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int parentalDelay );
+    Parent( Printer &prt, Bank &bank, unsigned int numberOfStudents, unsigned int parentalDelay );
 };
 
 #endif
