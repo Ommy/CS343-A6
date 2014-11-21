@@ -15,6 +15,5 @@ T poll_front( std::deque<T>& deque ) {
 
 bool convertToSignedInteger( int& val, char* buffer );
 bool convertToUnsignedInteger( unsigned int& val, char* buffer );
-bool comments( std::ifstream &in, std::string &name );
 
 #endif

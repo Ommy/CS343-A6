@@ -16,13 +16,3 @@ bool convertToUnsignedInteger( unsigned int& val, char* buffer ) {
     return ! ss.fail()
            && std::string( buffer ).find_first_not_of( " ", ss.tellg() ) == std::string::npos;
 }
-
-bool comments( std::ifstream &in, std::string &name ) {
-    for ( ;; ) {
-    in >> name;
-      if ( in.fail() ) return true;
-      if ( name.substr(0,1) != "#" ) break;
-    in.ignore( std::numeric_limits<int>::max(), '\n' ); // ignore remainder of line
-    }
-    return false;
-}
