@@ -1,11 +1,20 @@
 #include "a6config.h"
-#include "utilities.h"
 
 #include <iostream>
 #include <fstream>
 #include <limits>
 
 using namespace std;
+
+static bool comments( std::ifstream &in, std::string &name ) {
+    for ( ;; ) {
+    in >> name;
+      if ( in.fail() ) return true;
+      if ( name.substr(0,1) != "#" ) break;
+    in.ignore( std::numeric_limits<int>::max(), '\n' ); // ignore remainder of line
+    }
+    return false;
+}
 
 void Config::processConfigFile( const char *configFile, ConfigParms &cparms ) {
     const unsigned int Parmnum = 9;
