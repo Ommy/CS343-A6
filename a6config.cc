@@ -1,6 +1,9 @@
 #include "a6config.h"
+#include "utilities.h"
 
 #include <iostream>
+#include <fstream>
+#include <limits>
 
 using namespace std;
 

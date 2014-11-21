@@ -1,7 +1,9 @@
 #ifndef _A6_BOTTLING_PLANT_H__
 #define _A6_BOTTLING_PLANT_H__
 
-#include "a6printer.h"
+#include "a6nameserver.h"
+
+_Cormonitor Printer;
 
 _Task BottlingPlant {
     void main();

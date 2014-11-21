@@ -15,6 +15,7 @@ struct ConfigParms {
 
 class Config
 {
+public:
     static void processConfigFile( const char *configFile, ConfigParms &cparms );
 };
 

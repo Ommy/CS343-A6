@@ -1,6 +1,10 @@
 #ifndef _A6_NAME_SERVER
 #define _A6_NAME_SERVER
 
+#include "a6vendingmachine.h"
+
+_Cormonitor Printer;
+
 _Task NameServer {
     void main();
   public:

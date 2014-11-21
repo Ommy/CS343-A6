@@ -12,9 +12,9 @@ extern MPRNG mprng;
 class A6 {
     std::string filename;
     unsigned int randomSeed;
+    std::string configFilename;
 
     ConfigParms configParms;
-    const std::string DefaultConfigFilename;
 
     std::string getCorrectUsage();
     void throwInvalidUsage( std::string usageString = "" );
