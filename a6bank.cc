@@ -1,9 +1,10 @@
 #include "a6bank.h"
 
-Bank::Bank( unsigned int numStudents ) : numStudents(numStudents) {
-    accountCheck = new uCondition[numStudents];
-    bankAccount = new unsigned int [numStudents];
-    for (unsigned int i = 0; i < numStudents; i++) {
+Bank::Bank( unsigned int numStudents ) {
+    numberOfStudents = numStudents;
+    accountCheck = new uCondition[numberOfStudents];
+    bankAccount = new unsigned int [numberOfStudents];
+    for (unsigned int i = 0; i < numberOfStudents; i++) {
         bankAccount[i] = 0;
     }
 }
