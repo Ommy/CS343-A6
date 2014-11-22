@@ -1,4 +1,4 @@
 *.o
 *.d
-
+*.sublime-workspace
 .DS_Store
