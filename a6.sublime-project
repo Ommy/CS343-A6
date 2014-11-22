@@ -12,5 +12,6 @@
     "tab_size": 4,
     "translate_tabs_to_spaces": true,
     "trim_automatic_white_space": true,
+    "word_wrap": true,
     "wrap_lines": 120
 }
