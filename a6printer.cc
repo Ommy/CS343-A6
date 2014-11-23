@@ -64,22 +64,24 @@ void Printer::print( Kind kind, char state, int value1, int value2 ) {
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
+    lid += kindIndex[kind];
     printEverythingIfCollided(kind, lid, state);
     infoState[lid] = new Info(kind, state);
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
+    lid += kindIndex[kind];
     printEverythingIfCollided(kind, lid, state);
     infoState[lid] = new ValueInfo(kind, state, value1);
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
+    lid += kindIndex[kind];
     printEverythingIfCollided(kind, lid, state);
     infoState[lid] = new ValuesInfo(kind, state, value1, value2);
 }
 
 void Printer::printEverythingIfCollided( Kind kind, unsigned int lid, char state ) {
-    lid += kindIndex[kind];
     if (infoState.find(lid) != infoState.end()) {
         if (state == 'F') {
             printEverything("...");
