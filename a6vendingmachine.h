@@ -3,16 +3,19 @@
 
 #include "a6watcard.h"
 
-
 _Cormonitor Printer;
 _Task NameServer;
 
 _Task VendingMachine {
-    void main();
   public:
     enum Flavours { 
-        RED
+        BLUE_BLACK_CHERRY = 0,
+        CLASSICAL_CREAM_SODA,
+        ROCK_ROOT_BEER,
+        JAZZ_LIME,
+        NUMBER_OF_FLAVOURS
     };
+
     _Event Funds {};                       // insufficient funds
     _Event Stock {};                       // out of stock for particular flavour
     VendingMachine( Printer &prt, NameServer &nameServer, unsigned int id, unsigned int sodaCost,
@@ -22,6 +25,24 @@ _Task VendingMachine {
     void restocked();
     _Nomutex unsigned int cost();
     _Nomutex unsigned int getId();
+private:
+    enum State {
+        InsufficientFunds,
+        InsufficientStock,
+        Restocking,
+        Success
+    };
+
+    void main();
+
+    Printer& printer;
+    NameServer& nameServer;
+    const unsigned int id;
+    const unsigned int sodaCost;
+    const unsigned int maxStockPerFlavour;
+
+    unsigned int currentStock[NUMBER_OF_FLAVOURS];
+    State state;
 };
 
 #endif
