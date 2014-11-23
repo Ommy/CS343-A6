@@ -1,9 +1,7 @@
 #include "a6truck.h"
-#include "MPRNG.h"
+#include "a6main.h"
 #include "a6nameserver.h"
 #include "a6bottlingplant.h"
-
-extern MPRNG mprng;
 
 Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
                 unsigned int numVendingMachines, unsigned int maxStockPerFlavour) {
@@ -31,7 +29,7 @@ void Truck::main() {
             } _CatchResume(BottlingPlant::Shutdown &shutdown) {
                 return;
             }
-    Restock:for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; nextMachine(i)) {
+    Restock:for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; i = nextMachine(i)) {
                 unsigned int * inventory = machines[i]->inventory();
                 for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
                     unsigned int currentStock = inventory[flavour];
@@ -42,7 +40,7 @@ void Truck::main() {
                         inventory[flavour] = cargo[flavour];
                         cargo[flavour] = 0;
                     }
-                    if (!hasCargo()) {
+                    if (hasNoCargo()) {
                         lastMachineStocked = i;
                         break Restock;
                     }
@@ -56,7 +54,7 @@ unsigned int Truck::nextMachine(unsigned int machine) {
     return ((machine + 1) % VendingMachine::NUMBER_OF_FLAVOURS);
 }
 
-bool Truck::hasCargo() {
+bool Truck::hasNoCargo() {
     for (int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; i++) {
         if (cargo[i] != 0) {
             return false;
