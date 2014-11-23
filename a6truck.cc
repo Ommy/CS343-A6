@@ -40,6 +40,7 @@ void Truck::main() {
                         inventory[flavour] += cargo[flavour];
                         cargo[flavour] = 0;
                     }
+                    machines[i]->restocked();
                     if (hasNoCargo()) {
                         lastMachineStocked = i;
                         break Restock;
