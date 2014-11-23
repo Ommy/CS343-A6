@@ -131,3 +131,7 @@ Printer::ValuesInfo::ValuesInfo( Kind kind, char state, int value1, int value2 )
 void Printer::ValuesInfo::print() {
     std::cout << state << value1 << "," << value2;
 }
+
+void Printer::main() {
+    
+}
