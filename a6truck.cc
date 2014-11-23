@@ -31,8 +31,7 @@ void Truck::main() {
             } _CatchResume(BottlingPlant::Shutdown &shutdown) {
                 return;
             }
-            unsigned int i = nextMachine(lastMachineStocked);
-            while (true) {
+    Restock:for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; nextMachine(i)) {
                 unsigned int * inventory = machines[i]->inventory();
                 for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
                     unsigned int currentStock = inventory[flavour];
@@ -43,10 +42,10 @@ void Truck::main() {
                         inventory[flavour] = cargo[flavour];
                         cargo[flavour] = 0;
                     }
-                }
-                i = nextMachine(i);
-                if (i == lastMachineStocked) {
-                    break;
+                    if (!hasCargo()) {
+                        lastMachineStocked = i;
+                        break Restock;
+                    }
                 }
             }
         }
@@ -55,6 +54,15 @@ void Truck::main() {
 
 unsigned int Truck::nextMachine(unsigned int machine) {
     return ((machine + 1) % VendingMachine::NUMBER_OF_FLAVOURS);
+}
+
+bool Truck::hasCargo() {
+    for (int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; i++) {
+        if (cargo[i] != 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 Truck::~Truck() {

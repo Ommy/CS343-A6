@@ -13,6 +13,7 @@ _Task Truck {
     ~Truck();
   private:
     void main();
+    bool hasCargo();
     unsigned int nextMachine(unsigned int);
     unsigned int numberOfVendingMachines;
     unsigned int maxStockOfEachFlavour;
