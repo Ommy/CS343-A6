@@ -64,30 +64,28 @@ void Printer::print( Kind kind, char state, int value1, int value2 ) {
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
-    lid += kindIndex[kind];
-    printEverythingIfCollided(kind, lid, state);
-    infoState[lid] = new Info(kind, state);
+    printInfo(kind, lid, state, new Info(kind, state));
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
-    lid += kindIndex[kind];
-    printEverythingIfCollided(kind, lid, state);
-    infoState[lid] = new ValueInfo(kind, state, value1);
+    printInfo(kind, lid, state, new ValueInfo(kind, state, value1));
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
-    lid += kindIndex[kind];
-    printEverythingIfCollided(kind, lid, state);
-    infoState[lid] = new ValuesInfo(kind, state, value1, value2);
+    printInfo(kind, lid, state, new ValuesInfo(kind, state, value1, value2));
 }
 
-void Printer::printEverythingIfCollided( Kind kind, unsigned int lid, char state ) {
-    if (infoState.find(lid) != infoState.end()) {
-        if (state == 'F') {
-            printEverything("...");
-        } else {
-            printEverything("");
-        }
+void Printer::printInfo( Kind kind, unsigned int lid, char state, Info* info ) {
+    lid += kindIndex[kind];
+    if (state == 'F') {
+        printEverything("");
+        infoState[lid] = info;
+        printEverything("...");
+    } else if (infoState.find(lid) != infoState.end()) {
+        printEverything("");
+        infoState[lid] = info;   
+    } else {
+        infoState[lid] = info;
     }
 }
 

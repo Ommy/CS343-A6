@@ -40,7 +40,7 @@ private:
         virtual void print();
     };
 
-    void printEverythingIfCollided( Kind kind, unsigned int lid, char state );
+    void printInfo( Kind kind, unsigned int lid, char state, Info* info );
     void printEverything(std::string);
     void flushInfo();
 
