@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <deque>
 
 #include "a6main.h"
 #include "a6printer.h"
@@ -43,6 +44,21 @@ A6::~A6() {
 }
 
 void A6::run() {
+    Printer printer(configParms.numStudents, configParms.numVendingMachines, configParms.numCouriers);
+    Bank bank(configParms.numStudents);
+    Parent parent(printer, bank, configParms.numStudents, configParms.parentalDelay);
+    WATCardOffice office(printer, bank, configParms.numCouriers);
+    NameServer nameServer(printer, configParms.numVendingMachines, configParms.numStudents);
+    BottlingPlant plant(printer, nameServer, configParms.numVendingMachines, configParms.maxShippedPerFlavour, configParms.maxStockPerFlavour, configParms.timeBetweenShipments );
+
+    std::deque<Student*> students;
+    for (unsigned int i = 0; i < configParms.numStudents; ++i) {
+        students.push_back(new Student(printer, nameServer, office, i, configParms.maxPurchases));
+    }
+
+    for (unsigned int i = 0; i < configParms.numStudents; ++i) {
+        delete students[i];
+    }
 }
 
 std::string A6::getCorrectUsage() {

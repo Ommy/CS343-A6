@@ -40,6 +40,7 @@ private:
         virtual void print();
     };
 
+    void main();
     void printInfo( Kind kind, unsigned int lid, char state, Info* info );
     void printEverything(std::string);
     void flushInfo();
