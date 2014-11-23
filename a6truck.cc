@@ -18,11 +18,11 @@ Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
 
 
 void Truck::main() {
+    VendingMachine ** machines = server->getMachineList();
     while (true) {
         _Accept (~Truck) {
             break;
         } _Else {
-            VendingMachine ** machines = server->getMachineList();
             yield(mprng(1,10));
             try {
                 bottlingPlant->getShipment(cargo);
@@ -37,7 +37,7 @@ void Truck::main() {
                         inventory[flavour] = maxStockOfEachFlavour;
                         cargo[flavour] -= (maxStockOfEachFlavour - currentStock);
                     } else {
-                        inventory[flavour] = cargo[flavour];
+                        inventory[flavour] += cargo[flavour];
                         cargo[flavour] = 0;
                     }
                     if (hasNoCargo()) {
