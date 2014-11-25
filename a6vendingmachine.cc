@@ -49,9 +49,9 @@ void VendingMachine::main() {
             state = Success;
         } or _When (state == Success) _Accept ( buy ) {
             if (state == InsufficientFunds) {
-                _Resume Funds();
+                throw Funds();
             } else if (state == InsufficientStock) {
-                _Resume Stock();
+                throw Stock();
             }
             state = Success;
         }

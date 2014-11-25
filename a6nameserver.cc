@@ -14,9 +14,17 @@ NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned 
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
     machines[registeredMachine++] = vendingmachine;
+    if (registeredMachine == numberOfVendingMachines) {
+        while (!vendingMachineLock.empty()) {
+            vendingMachineLock.signal();
+        }
+    } 
 }
 
 VendingMachine * NameServer::getMachine( unsigned int id ) {
+    while (registeredMachine < numberOfVendingMachines) {
+        vendingMachineLock.wait();
+    }
     unsigned int currentMachine = studentsCurrentMachine[id];
     unsigned int nextMachine = (currentMachine+1) % numberOfVendingMachines;
     studentsCurrentMachine[id] = nextMachine;
@@ -24,6 +32,9 @@ VendingMachine * NameServer::getMachine( unsigned int id ) {
 }
 
 VendingMachine ** NameServer::getMachineList() {
+    while (registeredMachine < numberOfVendingMachines) {
+        vendingMachineLock.wait();
+    }
     return machines;
 }
 

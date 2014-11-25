@@ -22,6 +22,7 @@ _Task NameServer {
     VendingMachine ** machines;
     std::map<unsigned int, VendingMachine*> machineAssignment;
     std::map<unsigned int, unsigned int> studentsCurrentMachine;
+    uCondition vendingMachineLock;
 
 };
 
