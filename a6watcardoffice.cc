@@ -69,7 +69,8 @@ void WATCardOffice::Courier::main() {
             bank.withdraw(jobArgs.sid, jobArgs.amount);
             card->deposit(jobArgs.amount);
             if (mprng(5) == 0) {
-                delete card;
+                // No need to delete, assumption that Future_ISM handles that for us
+                // delete card;
                 job->result.exception(new WATCardOffice::Lost());
             } else {
                 job->result.delivery(card);
