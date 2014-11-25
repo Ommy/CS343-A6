@@ -51,6 +51,11 @@ void A6::run() {
     NameServer nameServer(printer, configParms.numVendingMachines, configParms.numStudents);
     BottlingPlant plant(printer, nameServer, configParms.numVendingMachines, configParms.maxShippedPerFlavour, configParms.maxStockPerFlavour, configParms.timeBetweenShipments );
 
+    std::deque<VendingMachine*> vendingMachines;
+    for (unsigned int i = 0; i < configParms.numVendingMachines; i++) {
+        vendingMachines.push_back(new VendingMachine(printer, nameServer, i, configParms.sodaCost, configParms.maxStockPerFlavour));
+    }
+
     std::deque<Student*> students;
     for (unsigned int i = 0; i < configParms.numStudents; ++i) {
         students.push_back(new Student(printer, nameServer, office, i, configParms.maxPurchases));
@@ -58,6 +63,10 @@ void A6::run() {
 
     for (unsigned int i = 0; i < configParms.numStudents; ++i) {
         delete students[i];
+    }
+
+    for (unsigned int i = 0; i < configParms.numVendingMachines; i++) {
+        delete vendingMachines[i];
     }
 }
 

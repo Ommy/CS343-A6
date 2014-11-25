@@ -22,6 +22,13 @@ _Task Student {
     unsigned int numberOfSodasToPurchase;
     VendingMachine::Flavours favouriteFlavour;
     uCondition watcardBalanceLock;
+    enum States {
+        Started = 'S',
+        SelectedVendingMachine = 'V',
+        Bought = 'B',
+        Lost = 'L',
+        Finished = 'F'
+    };
 };
 
 #endif
