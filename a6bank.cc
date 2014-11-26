@@ -1,12 +1,8 @@
 #include "a6bank.h"
 
-Bank::Bank( unsigned int numStudents ) {
-    numberOfStudents = numStudents;
-    accountCheck = new uCondition[numberOfStudents];
-    bankAccount = new unsigned int [numberOfStudents];
-    for (unsigned int i = 0; i < numberOfStudents; i++) {
-        bankAccount[i] = 0;
-    }
+Bank::Bank( unsigned int numberOfStudents ) :   numberOfStudents(numberOfStudents), 
+                                                bankAccount(numberOfStudents, 0), 
+                                                accountCheck(numberOfStudents) {
 }
 
 void Bank::deposit( unsigned int id, unsigned int amount ) {
@@ -22,6 +18,4 @@ void Bank::withdraw( unsigned int id, unsigned int amount ) {
 }
 
 Bank::~Bank(){
-    delete[] bankAccount;
-    delete[] accountCheck;
 }

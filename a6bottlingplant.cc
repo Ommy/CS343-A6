@@ -3,22 +3,28 @@
 #include "a6main.h"
 #include "a6truck.h"
 
-BottlingPlant::BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numberOfVendingMachines, unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour, unsigned int timeBetweenShipments )
-: printer(prt), nameServer(nameServer), numberOfVendingMachines(numberOfVendingMachines), maxShippedPerFlavour(maxShippedPerFlavour), maxStockPerFlavour(maxStockPerFlavour), timeBetweenShipments(timeBetweenShipments) {
-    shuttingDown = false;
-    for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
-        shipment[i] = 0;
-    }
+BottlingPlant::BottlingPlant(   Printer &prt, 
+                                NameServer &nameServer, 
+                                unsigned int numberOfVendingMachines, 
+                                unsigned int maxShippedPerFlavour, 
+                                unsigned int maxStockPerFlavour, 
+                                unsigned int timeBetweenShipments ) :   printer(prt), 
+                                                                        nameServer(nameServer), 
+                                                                        numberOfVendingMachines(numberOfVendingMachines), 
+                                                                        maxShippedPerFlavour(maxShippedPerFlavour), 
+                                                                        maxStockPerFlavour(maxStockPerFlavour), 
+                                                                        timeBetweenShipments(timeBetweenShipments),
+                                                                        shuttingDown(false) {
+    shipment.fill(0);
 }
 
 BottlingPlant::~BottlingPlant() {
-    delete truck;
 }
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
     if (shuttingDown == true) {
         uRendezvousAcceptor();
-        throw Shutdown();
+        _Resume Shutdown();
     } else {
         for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
             cargo[i] = shipment[i];
@@ -28,18 +34,20 @@ void BottlingPlant::getShipment( unsigned int cargo[] ) {
 }
 
 void BottlingPlant::main() {
-    truck = new Truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour); 
+    Truck truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour); 
     
     while (true) {
         yield(timeBetweenShipments);
         for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
-            shipment[i] = mprng(maxShippedPerFlavour);
+            shipment[i] = A6::mprng(maxShippedPerFlavour);
         }
 
         _Accept(~BottlingPlant) {
-            shuttingDown = true;
             break;
         } or _Accept( getShipment ) {
+            
         }
     }
+
+    shuttingDown = true;
 }

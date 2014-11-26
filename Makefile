@@ -1,7 +1,7 @@
 OPT:=-O2 -multi
 
 CXX = u++ # compiler
-CXXFLAGS = -g -Wall -Wno-unused-label -MMD ${OPT}
+CXXFLAGS = -std=c++0x -g -Wall -Wno-unused-label -MMD ${OPT}
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}} # makefile name
 
 OBJECTS1 = a6bank.o a6bottlingplant.o a6config.o a6main.o a6nameserver.o a6parent.o a6printer.o \

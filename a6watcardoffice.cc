@@ -12,7 +12,6 @@ WATCardOffice::~WATCardOffice() {
     for (unsigned int i = 0; i < couriers.size(); i++) {
         delete couriers[i];
     }
-
 }
 
 WATCard::FWATCard WATCardOffice::createJob(unsigned int sid, unsigned int amount, WATCard *card) {
@@ -43,9 +42,7 @@ void WATCardOffice::main() {
     while (true) {
         _Accept(~WATCardOffice) {
             break;
-        } or _Accept(create) {
-
-        } or _Accept(transfer) {
+        } or _Accept(create, transfer) {
 
         } or _Accept(requestWork) {
 
@@ -68,7 +65,7 @@ void WATCardOffice::Courier::main() {
 
             bank.withdraw(jobArgs.sid, jobArgs.amount);
             card->deposit(jobArgs.amount);
-            if (mprng(5) == 0) {
+            if (A6::mprng(5) == 0) {
                 // No need to delete, assumption that Future_ISM handles that for us
                 // delete card;
                 job->result.exception(new WATCardOffice::Lost());

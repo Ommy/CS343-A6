@@ -10,18 +10,17 @@ _Cormonitor Printer;
 _Task Student {
     void main();
   public:
-    Student( Printer &prt, NameServer &nameServer, WATCardOffice &cardOffice, unsigned int id,
-             unsigned int maxPurchases );
+    Student(    Printer &prt, 
+                NameServer &nameServer, 
+                WATCardOffice &cardOffice, 
+                unsigned int id, 
+                unsigned int maxPurchases );
   private:
     Printer & printer;
     NameServer & nameServer;
     WATCardOffice & cardOffice;
-    VendingMachine * machine;
-    unsigned int studentID;
-    unsigned int maxPurchases;
-    unsigned int numberOfSodasToPurchase;
-    VendingMachine::Flavours favouriteFlavour;
-    uCondition watcardBalanceLock;
+    const unsigned int studentId;
+    const unsigned int maxPurchases;
 };
 
 #endif

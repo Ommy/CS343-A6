@@ -47,7 +47,7 @@ _Task WATCardOffice {
 
     Printer & printer;
     Bank & bank;
-    unsigned int numberOfCouriers;
+    const unsigned int numberOfCouriers;
     std::vector<Courier*> couriers;
     std::deque<WATCardOffice::Job*> jobQueue;
     uCondition jobLock;

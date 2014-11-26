@@ -4,8 +4,12 @@
 #include <sstream>
 #include <string>
 
-Printer::Printer(unsigned int numberOfStudents, unsigned int numberOfVendingMachines, unsigned int numberOfCouriers)
-: numberOfStudents(numberOfStudents), numberOfVendingMachines(numberOfVendingMachines), numberOfCouriers(numberOfCouriers), numberOfColumns(0) {
+Printer::Printer(   unsigned int numberOfStudents, 
+                    unsigned int numberOfVendingMachines, 
+                    unsigned int numberOfCouriers) :    numberOfStudents(numberOfStudents), 
+                                                        numberOfVendingMachines(numberOfVendingMachines), 
+                                                        numberOfCouriers(numberOfCouriers), 
+                                                        numberOfColumns(0) {
 
     kindIndex[Parent] = numberOfColumns;
     std::cout << "Parent" << "\t";

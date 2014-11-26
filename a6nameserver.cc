@@ -1,11 +1,12 @@
 #include "a6nameserver.h"
 
-NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents ) {
-    printer = &prt;
-    numberOfStudents = numStudents;
-    registeredMachine = 0;
-    numberOfVendingMachines = numVendingMachines;
-    machines = new VendingMachine*[numVendingMachines];
+NameServer::NameServer( Printer &prt, 
+                        unsigned int numVendingMachines, 
+                        unsigned int numStudents ) :    printer(prt),
+                                                        numberOfStudents(numStudents),
+                                                        numberOfVendingMachines(numVendingMachines),
+                                                        numberOfMachinesRegistered(0),
+                                                        machines(numberOfVendingMachines) {
     for (unsigned int i = 0; i < numberOfStudents; i++) {
         machineAssignment[i] = machines[(i % numberOfVendingMachines)];
         studentsCurrentMachine[i] = i % numberOfVendingMachines;
@@ -13,8 +14,8 @@ NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned 
 }
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
-    machines[registeredMachine++] = vendingmachine;
-    if (registeredMachine == numberOfVendingMachines) {
+    machines[numberOfMachinesRegistered++] = vendingmachine;
+    if (numberOfMachinesRegistered == numberOfVendingMachines) {
         while (!vendingMachineLock.empty()) {
             vendingMachineLock.signal();
         }
@@ -22,7 +23,7 @@ void NameServer::VMregister( VendingMachine *vendingmachine ) {
 }
 
 VendingMachine * NameServer::getMachine( unsigned int id ) {
-    while (registeredMachine < numberOfVendingMachines) {
+    while (numberOfMachinesRegistered < numberOfVendingMachines) {
         vendingMachineLock.wait();
     }
     unsigned int currentMachine = studentsCurrentMachine[id];
@@ -32,10 +33,10 @@ VendingMachine * NameServer::getMachine( unsigned int id ) {
 }
 
 VendingMachine ** NameServer::getMachineList() {
-    while (registeredMachine < numberOfVendingMachines) {
+    while (numberOfMachinesRegistered < numberOfVendingMachines) {
         vendingMachineLock.wait();
     }
-    return machines;
+    return machines.data();
 }
 
 void NameServer::main() {
@@ -50,5 +51,7 @@ void NameServer::main() {
 }
 
 NameServer::~NameServer(){
-    delete[] machines;
+    for (unsigned int i = 0; i < machines.size(); ++i) {
+        delete machines[i];
+    }
 }

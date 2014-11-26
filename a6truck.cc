@@ -3,48 +3,57 @@
 #include "a6nameserver.h"
 #include "a6bottlingplant.h"
 
-Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
-                unsigned int numVendingMachines, unsigned int maxStockPerFlavour) {
-    printer = &prt;
-    server = &nameServer;
-    bottlingPlant = &plant;
+#include <algorithm>
 
-    numberOfVendingMachines = numVendingMachines;
-    maxStockOfEachFlavour = maxStockPerFlavour;
-    lastMachineStocked = 0;
-
-    cargo = new unsigned int [VendingMachine::NUMBER_OF_FLAVOURS];
+Truck::Truck(   Printer &prt, 
+                NameServer &nameServer, 
+                BottlingPlant &plant,
+                unsigned int numVendingMachines, 
+                unsigned int maxStockPerFlavour) :  printer(prt),
+                                                    server(nameServer),
+                                                    bottlingPlant(plant),
+                                                    numberOfVendingMachines(numVendingMachines),
+                                                    maxStockPerFlavour(maxStockPerFlavour),
+                                                    lastMachineStocked(0),
+                                                    cargo(VendingMachine::NUMBER_OF_FLAVOURS) {
 }
 
+Truck::~Truck() {
+}
 
 void Truck::main() {
-    VendingMachine ** machines = server->getMachineList();
+    VendingMachine** machines = server.getMachineList();
+
     while (true) {
         _Accept (~Truck) {
             break;
         } _Else {
-            yield(mprng(1,10));
+            yield(A6::mprng(1,10));
             try {
-                bottlingPlant->getShipment(cargo);
+                bottlingPlant.getShipment(cargo.data());
             } _CatchResume(BottlingPlant::Shutdown &shutdown) {
                 return;
             }
-    Restock:for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; i = nextMachine(i)) {
+
+            for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; i = nextMachine(i)) {
                 unsigned int * inventory = machines[i]->inventory();
-                for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
+                for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; ++flavour) {
                     unsigned int currentStock = inventory[flavour];
-                    if (currentStock + cargo[flavour] > maxStockOfEachFlavour) {
-                        inventory[flavour] = maxStockOfEachFlavour;
-                        cargo[flavour] -= (maxStockOfEachFlavour - currentStock);
+                    
+                    if (currentStock + cargo[flavour] > maxStockPerFlavour) {
+                        inventory[flavour] = maxStockPerFlavour;
+                        cargo[flavour] -= (maxStockPerFlavour - currentStock);
                     } else {
                         inventory[flavour] += cargo[flavour];
                         cargo[flavour] = 0;
                     }
+
                     machines[i]->restocked();
-                    if (hasNoCargo()) {
-                        lastMachineStocked = i;
-                        break Restock;
-                    }
+                }
+
+                if (hasNoCargo()) {
+                    lastMachineStocked = i;
+                    break;
                 }
             }
         }
@@ -56,14 +65,5 @@ unsigned int Truck::nextMachine(unsigned int machine) {
 }
 
 bool Truck::hasNoCargo() {
-    for (int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; i++) {
-        if (cargo[i] != 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-Truck::~Truck() {
-    delete[] cargo;
+    return (unsigned int)std::count(cargo.begin(), cargo.end(), 0) == cargo.size();
 }

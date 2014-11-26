@@ -7,14 +7,12 @@
 #include <string>
 #include <stdexcept>
 
-extern MPRNG mprng;
-
 class A6 {
     std::string filename;
     unsigned int randomSeed;
     std::string configFilename;
 
-    ConfigParms configParms;
+    ConfigParams configParams;
 
     std::string getCorrectUsage();
     void throwInvalidUsage( std::string usageString = "" );
@@ -23,6 +21,8 @@ public:
     A6( int argc, char** argv );
     ~A6();
     void run();
+
+    static MPRNG mprng;
 };
 
 class CommandLineArgsException : public std::runtime_error {
