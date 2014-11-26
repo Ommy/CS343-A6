@@ -21,7 +21,7 @@ static bool comments( std::ifstream &in, std::string &name ) {
     return false;
 }
 
-void Config::processConfigFile( const char *configFile, ConfigParms &cparms ) {
+void Config::processConfigFile( const char *configFile, ConfigParams &params ) {
     const unsigned int Parmnum = 9;
     struct {
         const char* name;               // configuration name
@@ -30,15 +30,15 @@ void Config::processConfigFile( const char *configFile, ConfigParms &cparms ) {
     } 
 
     static parms[Parmnum] = {
-        { "SodaCost", false, cparms.sodaCost },
-        { "NumStudents", false, cparms.numStudents },
-        { "MaxPurchases", false, cparms.maxPurchases },
-        { "NumVendingMachines", false, cparms.numVendingMachines },
-        { "MaxStockPerFlavour", false, cparms.maxStockPerFlavour },
-        { "MaxShippedPerFlavour", false, cparms.maxShippedPerFlavour },
-        { "TimeBetweenShipments", false, cparms.timeBetweenShipments },
-        { "ParentalDelay", false, cparms.parentalDelay },
-        { "NumCouriers", false, cparms.numCouriers },
+        { "SodaCost", false, params.sodaCost },
+        { "NumStudents", false, params.numStudents },
+        { "MaxPurchases", false, params.maxPurchases },
+        { "NumVendingMachines", false, params.numVendingMachines },
+        { "MaxStockPerFlavour", false, params.maxStockPerFlavour },
+        { "MaxShippedPerFlavour", false, params.maxShippedPerFlavour },
+        { "TimeBetweenShipments", false, params.timeBetweenShipments },
+        { "ParentalDelay", false, params.parentalDelay },
+        { "NumCouriers", false, params.numCouriers },
     };
 
     std::string name;

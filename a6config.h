@@ -1,7 +1,7 @@
 #ifndef _A6_CONFIG_H__
 #define _A6_CONFIG_H__
 
-struct ConfigParms {
+struct ConfigParams {
     unsigned int sodaCost;                 // MSRP per bottle
     unsigned int numStudents;              // number of students to create
     unsigned int maxPurchases;             // maximum number of bottles a student purchases
@@ -16,7 +16,7 @@ struct ConfigParms {
 class Config
 {
 public:
-    static void processConfigFile( const char *configFile, ConfigParms &cparms );
+    static void processConfigFile( const char *configFile, ConfigParams &params );
 };
 
 #endif

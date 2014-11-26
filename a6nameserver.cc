@@ -1,54 +1,53 @@
 #include "a6nameserver.h"
+#include "a6printer.h"
 
-NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents ) {
-    printer = &prt;
-    numberOfStudents = numStudents;
-    registeredMachine = 0;
-    numberOfVendingMachines = numVendingMachines;
-    machines = new VendingMachine*[numVendingMachines];
+NameServer::NameServer( Printer &prt, 
+                        unsigned int numVendingMachines, 
+                        unsigned int numStudents ) :    printer(prt),
+                                                        numberOfStudents(numStudents),
+                                                        numberOfVendingMachines(numVendingMachines),
+                                                        numberOfMachinesRegistered(0),
+                                                        machines(numberOfVendingMachines),
+                                                        machineAssignments(numberOfStudents) {
     for (unsigned int i = 0; i < numberOfStudents; i++) {
-        machineAssignment[i] = machines[(i % numberOfVendingMachines)];
-        studentsCurrentMachine[i] = i % numberOfVendingMachines;
-    }
-}
-
-void NameServer::VMregister( VendingMachine *vendingmachine ) {
-    machines[registeredMachine++] = vendingmachine;
-    if (registeredMachine == numberOfVendingMachines) {
-        while (!vendingMachineLock.empty()) {
-            vendingMachineLock.signal();
-        }
-    } 
-}
-
-VendingMachine * NameServer::getMachine( unsigned int id ) {
-    while (registeredMachine < numberOfVendingMachines) {
-        vendingMachineLock.wait();
-    }
-    unsigned int currentMachine = studentsCurrentMachine[id];
-    unsigned int nextMachine = (currentMachine+1) % numberOfVendingMachines;
-    studentsCurrentMachine[id] = nextMachine;
-    return machineAssignment[nextMachine];
-}
-
-VendingMachine ** NameServer::getMachineList() {
-    while (registeredMachine < numberOfVendingMachines) {
-        vendingMachineLock.wait();
-    }
-    return machines;
-}
-
-void NameServer::main() {
-    while (true) {
-        _Accept (~NameServer) {
-            break;
-        } or _Accept ( VMregister ) {
-        } or _Accept ( getMachine ){
-        } or _Accept ( getMachineList ){
-        }
+        machineAssignments[i] = i % numberOfVendingMachines;
     }
 }
 
 NameServer::~NameServer(){
-    delete[] machines;
+}
+
+void NameServer::VMregister( VendingMachine *vendingmachine ) {
+    printer.print(Printer::NameServer, (char)Register, vendingmachine->getId());
+    machines[numberOfMachinesRegistered] = vendingmachine;
+    numberOfMachinesRegistered += 1;
+}
+
+VendingMachine * NameServer::getMachine( unsigned int id ) {
+    unsigned int current = machineAssignments[id];
+    unsigned int next = (current + 1) % numberOfVendingMachines;
+    machineAssignments[id] = next;
+
+    printer.print(Printer::NameServer, (char)New, id, next);
+    return machines[machineAssignments[id]];
+}
+
+VendingMachine ** NameServer::getMachineList() {
+    return machines.data();
+}
+
+void NameServer::main() {
+    printer.print(Printer::NameServer, (char)Start);
+
+    while (true) {
+        _Accept (~NameServer) {
+            break;
+        } or _When(numberOfMachinesRegistered < numberOfVendingMachines) _Accept ( VMregister ) {
+
+        } or _When(numberOfMachinesRegistered == numberOfVendingMachines) _Accept ( getMachine, getMachineList ) {
+
+        }
+    }
+    
+    printer.print(Printer::NameServer, (char)Finish);
 }

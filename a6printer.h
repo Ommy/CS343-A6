@@ -43,7 +43,6 @@ private:
     void main();
     void printInfo( Kind kind, unsigned int lid, char state, Info* info );
     void printEverything(std::string);
-    void flushInfo();
 
     const unsigned int numberOfStudents;
     const unsigned int numberOfVendingMachines;

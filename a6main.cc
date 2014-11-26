@@ -15,7 +15,7 @@
 #include "MPRNG.h"
 #include "utilities.h"
 
-MPRNG mprng;
+MPRNG A6::mprng;
 
 A6::A6( int argc, char** argv ) {
     filename = std::string( argv[0] );
@@ -30,7 +30,7 @@ A6::A6( int argc, char** argv ) {
     case 2:
         configFilename = argv[1];
     case 1:
-        Config::processConfigFile(configFilename.c_str(), configParms);
+        Config::processConfigFile(configFilename.c_str(), configParams);
         break;
     default:
         throwInvalidUsage();
@@ -44,20 +44,29 @@ A6::~A6() {
 }
 
 void A6::run() {
-    Printer printer(configParms.numStudents, configParms.numVendingMachines, configParms.numCouriers);
-    Bank bank(configParms.numStudents);
-    Parent parent(printer, bank, configParms.numStudents, configParms.parentalDelay);
-    WATCardOffice office(printer, bank, configParms.numCouriers);
-    NameServer nameServer(printer, configParms.numVendingMachines, configParms.numStudents);
-    BottlingPlant plant(printer, nameServer, configParms.numVendingMachines, configParms.maxShippedPerFlavour, configParms.maxStockPerFlavour, configParms.timeBetweenShipments );
+    Printer printer(configParams.numStudents, configParams.numVendingMachines, configParams.numCouriers);
+    Bank bank(configParams.numStudents);
+    Parent parent(printer, bank, configParams.numStudents, configParams.parentalDelay);
+    WATCardOffice office(printer, bank, configParams.numCouriers);
+    NameServer nameServer(printer, configParams.numVendingMachines, configParams.numStudents);
+    BottlingPlant plant(printer, nameServer, configParams.numVendingMachines, configParams.maxShippedPerFlavour, configParams.maxStockPerFlavour, configParams.timeBetweenShipments );
 
-    std::deque<Student*> students;
-    for (unsigned int i = 0; i < configParms.numStudents; ++i) {
-        students.push_back(new Student(printer, nameServer, office, i, configParms.maxPurchases));
+    std::deque<VendingMachine*> vendingMachines;
+    for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
+        vendingMachines.push_back(new VendingMachine(printer, nameServer, i, configParams.sodaCost, configParams.maxStockPerFlavour));
     }
 
-    for (unsigned int i = 0; i < configParms.numStudents; ++i) {
+    std::deque<Student*> students;
+    for (unsigned int i = 0; i < configParams.numStudents; ++i) {
+        students.push_back(new Student(printer, nameServer, office, i, configParams.maxPurchases));
+    }
+
+    for (unsigned int i = 0; i < configParams.numStudents; ++i) {
         delete students[i];
+    }
+
+    for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
+        delete vendingMachines[i];
     }
 }
 
@@ -78,8 +87,8 @@ void A6::throwInvalidUsage( std::string usageString ) {
 
 void uMain::main() {
     try {
-        A6 A6( argc, argv );
-        A6.run();
+        A6 a6( argc, argv );
+        a6.run();
     } catch ( CommandLineArgsException& e ) {
         std::cerr << e.what() << std::endl;
         exit( EXIT_FAILURE );

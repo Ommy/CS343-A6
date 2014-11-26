@@ -3,20 +3,31 @@
 #include "a6main.h"
 #include "a6bank.h"
 
-Parent::Parent( Printer &prt, Bank &bank, unsigned int numberOfStudents, unsigned int parentalDelay )
-: printer(prt), bank(bank), numberOfStudents(numberOfStudents), parentalDelay(parentalDelay) {
+Parent::Parent( Printer &prt, 
+                Bank &bank, 
+                unsigned int numberOfStudents, 
+                unsigned int parentalDelay ) :  printer(prt), 
+                                                bank(bank), 
+                                                numberOfStudents(numberOfStudents), 
+                                                parentalDelay(parentalDelay) {
 
 }
 
 void Parent::main() {
+    printer.print(Printer::Parent, (char)Start);
+
     while (true) {
         _Accept (~Parent)  {
             break;
         } _Else {
-            unsigned int money = mprng(1,3);
-            unsigned int student = mprng(numberOfStudents - 1);
+            unsigned int amount = A6::mprng(1,3);
+            unsigned int student = A6::mprng(numberOfStudents - 1);
             yield(parentalDelay);
-            bank.deposit(student, money);
+
+            printer.print(Printer::Parent, (char)Deposit, student, amount);
+            bank.deposit(student, amount);
         }
     }
+    
+    printer.print(Printer::Parent, (char)Finish);
 }

@@ -3,6 +3,8 @@
 
 #include "a6watcard.h"
 
+#include <array>
+
 _Cormonitor Printer;
 _Task NameServer;
 
@@ -18,7 +20,10 @@ _Task VendingMachine {
 
     _Event Funds {};                       // insufficient funds
     _Event Stock {};                       // out of stock for particular flavour
-    VendingMachine( Printer &prt, NameServer &nameServer, unsigned int id, unsigned int sodaCost,
+    VendingMachine( Printer &prt, 
+                    NameServer &nameServer, 
+                    unsigned int id, 
+                    unsigned int sodaCost,
                     unsigned int maxStockPerFlavour );
     void buy( Flavours flavour, WATCard &card );
     unsigned int *inventory();
@@ -29,7 +34,6 @@ private:
     enum State {
         InsufficientFunds,
         InsufficientStock,
-        Restocking,
         Success
     };
 
@@ -41,8 +45,19 @@ private:
     const unsigned int sodaCost;
     const unsigned int maxStockPerFlavour;
 
-    unsigned int currentStock[NUMBER_OF_FLAVOURS];
+    std::array<unsigned int, NUMBER_OF_FLAVOURS> stock;
     State state;
+    Flavours buyFlavour;
+    WATCard* buyCard;
+    uCondition waitCondition;
+
+    enum PrintStates {
+        Start = 'S',
+        StartReload = 'r',
+        CompleteReload = 'R',
+        Bought = 'B',
+        Finish = 'F',
+    };
 };
 
 #endif
