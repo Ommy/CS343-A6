@@ -21,6 +21,14 @@ _Task Student {
     WATCardOffice & cardOffice;
     const unsigned int studentId;
     const unsigned int maxPurchases;
+    VendingMachine * machine;
+    enum States {
+        Started = 'S',
+        SelectedVendingMachine = 'V',
+        Bought = 'B',
+        Lost = 'L',
+        Finished = 'F'
+    };
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "a6student.h"
 #include "a6main.h"
 #include "a6nameserver.h"
+#include "a6printer.h"
 
 Student::Student(   Printer &prt, 
                     NameServer &nameServer, 
@@ -18,11 +19,14 @@ void Student::main() {
     VendingMachine::Flavours favouriteFlavour = static_cast<VendingMachine::Flavours>(A6::mprng(0, 3));
     VendingMachine* machine = nameServer.getMachine(studentId);
 
+    printer.print(Printer::Student, (char)Started, favouriteFlavour, numberOfSodasToPurchase);
+
     WATCard::FWATCard fwatcard;
     WATCard* watcard = NULL;
 
     bool hasLostCard = false;
     unsigned int numberOfSodasPurchased = 0;
+
     while (numberOfSodasPurchased < numberOfSodasToPurchase) {
         try {
             if (numberOfSodasPurchased == 0 || hasLostCard) {
@@ -43,6 +47,7 @@ void Student::main() {
             fwatcard = cardOffice.transfer(studentId, 5 + machine->cost(), watcard);
         } catch (VendingMachine::Stock& stock) {
             machine = nameServer.getMachine(studentId);
+            printer.print(Printer::Student, (char)SelectedVendingMachine, machine->getId());
         }
     }
 }
