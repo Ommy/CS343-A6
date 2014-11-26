@@ -17,6 +17,13 @@ _Task NameServer {
     void VMregister( VendingMachine *vendingmachine );
     VendingMachine *getMachine( unsigned int id );
     VendingMachine **getMachineList();
+
+    enum States {
+        Start = 'S',
+        Register = 'R',
+        New = 'N',
+        Finish = 'F'
+    };
   private:
     void main();
     
@@ -26,10 +33,8 @@ _Task NameServer {
 
     unsigned int numberOfMachinesRegistered;
     std::vector<VendingMachine*> machines;
-    std::map<unsigned int, VendingMachine*> machineAssignment;
-    std::map<unsigned int, unsigned int> studentsCurrentMachine;
+    std::vector<unsigned int> machineAssignments;
     uCondition vendingMachineLock;
-
 };
 
 #endif

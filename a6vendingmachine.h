@@ -34,7 +34,6 @@ private:
     enum State {
         InsufficientFunds,
         InsufficientStock,
-        Restocking,
         Success
     };
 
@@ -48,6 +47,17 @@ private:
 
     std::array<unsigned int, NUMBER_OF_FLAVOURS> stock;
     State state;
+    Flavours buyFlavour;
+    WATCard* buyCard;
+    uCondition waitCondition;
+
+    enum PrintStates {
+        Start = 'S',
+        StartReload = 'r',
+        CompleteReload = 'R',
+        Bought = 'B',
+        Finish = 'F',
+    };
 };
 
 #endif

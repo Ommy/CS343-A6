@@ -14,14 +14,20 @@ Parent::Parent( Printer &prt,
 }
 
 void Parent::main() {
+    printer.print(Printer::Parent, (char)Start);
+
     while (true) {
         _Accept (~Parent)  {
             break;
         } _Else {
-            unsigned int money = A6::mprng(1,3);
+            unsigned int amount = A6::mprng(1,3);
             unsigned int student = A6::mprng(numberOfStudents - 1);
             yield(parentalDelay);
-            bank.deposit(student, money);
+
+            printer.print(Printer::Parent, (char)Deposit, student, amount);
+            bank.deposit(student, amount);
         }
     }
+    
+    printer.print(Printer::Parent, (char)Finish);
 }

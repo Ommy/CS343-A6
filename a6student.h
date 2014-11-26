@@ -22,12 +22,13 @@ _Task Student {
     const unsigned int studentId;
     const unsigned int maxPurchases;
     VendingMachine * machine;
+    
     enum States {
-        Started = 'S',
-        SelectedVendingMachine = 'V',
+        Start = 'S',
+        Selected = 'V',
         Bought = 'B',
         Lost = 'L',
-        Finished = 'F'
+        Finish = 'F'
     };
 };
 

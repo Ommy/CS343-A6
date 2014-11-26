@@ -18,36 +18,27 @@ void Student::main() {
     unsigned int numberOfSodasToPurchase = A6::mprng(1, maxPurchases);
     VendingMachine::Flavours favouriteFlavour = static_cast<VendingMachine::Flavours>(A6::mprng(0, 3));
     VendingMachine* machine = nameServer.getMachine(studentId);
+    WATCard::FWATCard fwatcard = cardOffice.create(studentId, 5);
 
-    printer.print(Printer::Student, (char)Started, favouriteFlavour, numberOfSodasToPurchase);
+    printer.print(Printer::Student, studentId, (char)Start, favouriteFlavour, numberOfSodasToPurchase);
 
-    WATCard::FWATCard fwatcard;
-    WATCard* watcard = NULL;
-
-    bool hasLostCard = false;
     unsigned int numberOfSodasPurchased = 0;
-
     while (numberOfSodasPurchased < numberOfSodasToPurchase) {
         try {
-            if (numberOfSodasPurchased == 0 || hasLostCard) {
-                fwatcard = cardOffice.create(studentId, 5);
-            }
-            if (!hasLostCard) {
-                yield(A6::mprng(1,10));
-            } else {
-                hasLostCard = false;
-            }
-            watcard = fwatcard();
-            machine->buy(favouriteFlavour, *watcard);
+            yield(A6::mprng(1,10));
+            machine->buy(favouriteFlavour, *fwatcard());
             numberOfSodasPurchased++;
-
-        } catch (WATCardOffice::Lost& lost) {
-            hasLostCard = true;
+            printer.print(Printer::Student, studentId, (char)Bought, (*fwatcard()).getBalance());
         } catch (VendingMachine::Funds& funds) {
-            fwatcard = cardOffice.transfer(studentId, 5 + machine->cost(), watcard);
+            fwatcard = cardOffice.transfer(studentId, 5 + machine->cost(), fwatcard());
         } catch (VendingMachine::Stock& stock) {
             machine = nameServer.getMachine(studentId);
-            printer.print(Printer::Student, (char)SelectedVendingMachine, machine->getId());
+            printer.print(Printer::Student, studentId, (char)Selected, machine->getId());
+        } catch (WATCardOffice::Lost& lost) {
+            fwatcard.cancel();
+            fwatcard = cardOffice.create(studentId, 5);
+            printer.print(Printer::Student, studentId, (char)Lost);
         }
     }
+    printer.print(Printer::Student, studentId, (char)Finish);
 }

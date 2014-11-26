@@ -13,6 +13,12 @@ _Task Parent {
     const unsigned int numberOfStudents;
     const unsigned int parentalDelay;
 
+    enum States {
+        Start = 'S',
+        Deposit = 'D',
+        Finish = 'F'
+    };    
+
   public:
     Parent( Printer &prt, Bank &bank, unsigned int numberOfStudents, unsigned int parentalDelay );
 };

@@ -52,7 +52,7 @@ void A6::run() {
     BottlingPlant plant(printer, nameServer, configParams.numVendingMachines, configParams.maxShippedPerFlavour, configParams.maxStockPerFlavour, configParams.timeBetweenShipments );
 
     std::deque<VendingMachine*> vendingMachines;
-    for (unsigned int i = 0; i < configParams.numVendingMachines; i++) {
+    for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
         vendingMachines.push_back(new VendingMachine(printer, nameServer, i, configParams.sodaCost, configParams.maxStockPerFlavour));
     }
 
@@ -65,7 +65,7 @@ void A6::run() {
         delete students[i];
     }
 
-    for (unsigned int i = 0; i < configParams.numVendingMachines; i++) {
+    for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
         delete vendingMachines[i];
     }
 }

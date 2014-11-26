@@ -29,6 +29,15 @@ _Task Truck {
     unsigned int lastMachineStocked;
 
     std::vector<unsigned int> cargo;
+
+    enum States {
+        Start = 'S',
+        PickUp = 'P',
+        Delivery = 'd',
+        Unsuccessful = 'U',
+        End = 'D',
+        Finish = 'F'
+    };
 };
 
 #endif

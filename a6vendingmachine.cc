@@ -2,6 +2,8 @@
 #include "a6printer.h"
 #include "a6nameserver.h"
 
+#include <iostream>
+
 VendingMachine::VendingMachine( Printer &prt, 
                                 NameServer &nameServer, 
                                 unsigned int id, 
@@ -17,16 +19,20 @@ VendingMachine::VendingMachine( Printer &prt,
     state = Success;
 }
 
-void VendingMachine::buy( Flavours flavour, WATCard &card ) {
-    if (card.getBalance() < sodaCost) {
-        state = InsufficientFunds;
-    } else if (stock[flavour] == 0) {
-        state = InsufficientStock;
-    } else {
-        card.withdraw(sodaCost);
-        stock[static_cast<int>(flavour)] -= 1;
-        state = Success;
+void VendingMachine::buy(Flavours flavour, WATCard &card ) {
+    buyFlavour = flavour;
+    buyCard = &card;
+    waitCondition.wait();
+
+    if (state == InsufficientFunds) {
+        uRendezvousAcceptor();
+        throw Funds();
+    } else if (state == InsufficientStock) {
+        uRendezvousAcceptor();
+        throw Stock();
     }
+    
+    state = Success;
 }
 
 unsigned int * VendingMachine::inventory() {
@@ -45,20 +51,30 @@ unsigned int VendingMachine::getId() {
 }
 
 void VendingMachine::main() {
+    printer.print(Printer::Vending, id, (char)Start, sodaCost);
+
     while (true) {
         _Accept(~VendingMachine) {
             break;
         } or _Accept( inventory ) {
-            state = Restocking;
-        } or _When (state == Restocking) _Accept ( restocked ) {
-            state = Success;
-        } or _When (state == Success) _Accept ( buy ) {
-            if (state == InsufficientFunds) {
-                throw Funds();
-            } else if (state == InsufficientStock) {
-                throw Stock();
+            printer.print(Printer::Vending, id, (char)StartReload);
+            _Accept(restocked) {
+                printer.print(Printer::Vending, id, (char)CompleteReload);
             }
-            state = Success;
+        } or _Accept ( buy ) {
+            if (buyCard->getBalance() < sodaCost) {
+                state = InsufficientFunds;
+            } else if (stock[buyFlavour] == 0) {
+                state = InsufficientStock;
+            } else {
+                buyCard->withdraw(sodaCost);
+                stock[static_cast<int>(buyFlavour)] -= 1;
+                printer.print(Printer::Vending, id, (char)Bought, buyFlavour, stock[static_cast<int>(buyFlavour)]);
+                state = Success;
+            }
+            waitCondition.signalBlock();
         }
     }
+
+    printer.print(Printer::Vending, id, (char)Finish);
 }

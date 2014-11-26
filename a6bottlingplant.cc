@@ -1,7 +1,9 @@
 #include "a6bottlingplant.h"
-#include "a6printer.h"
 #include "a6main.h"
 #include "a6truck.h"
+#include "a6printer.h"
+
+#include <algorithm>
 
 BottlingPlant::BottlingPlant(   Printer &prt, 
                                 NameServer &nameServer, 
@@ -19,12 +21,13 @@ BottlingPlant::BottlingPlant(   Printer &prt,
 }
 
 BottlingPlant::~BottlingPlant() {
+    delete truck;
 }
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
     if (shuttingDown == true) {
         uRendezvousAcceptor();
-        _Resume Shutdown();
+        throw Shutdown();
     } else {
         for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
             cargo[i] = shipment[i];
@@ -34,20 +37,25 @@ void BottlingPlant::getShipment( unsigned int cargo[] ) {
 }
 
 void BottlingPlant::main() {
-    Truck truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour); 
+    printer.print(Printer::BottlingPlant, (char)Start);
+
+    truck = new Truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour); 
     
     while (true) {
         yield(timeBetweenShipments);
         for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
             shipment[i] = A6::mprng(maxShippedPerFlavour);
         }
-
+        
+        printer.print(Printer::BottlingPlant, (char)Generate, std::accumulate(shipment.begin(), shipment.end(), 0));
+        
         _Accept(~BottlingPlant) {
             break;
         } or _Accept( getShipment ) {
-            
+            printer.print(Printer::BottlingPlant, (char)PickUp);
         }
     }
 
     shuttingDown = true;
+    printer.print(Printer::BottlingPlant, (char)Finish);
 }

@@ -25,24 +25,32 @@ _Task WATCardOffice {
     
     _Task Courier { 
       public:
-        Courier(Printer &prt, Bank &bank, WATCardOffice &office);
+        Courier(Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id);
       private:
         void main();
 
         Printer & printer;
         Bank & bank;
         WATCardOffice & office;
+        const unsigned int id;
+
+        enum States {
+            Start = 'S',
+            StartTransfer = 't',
+            CompleteTransfer = 'T',
+            Finish = 'F'
+        };
     };                 // communicates with bank
 
     void main();
-  public:
+public:
     _Event Lost {};                        // lost WATCard
     WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
     ~WATCardOffice();
     WATCard::FWATCard create( unsigned int sid, unsigned int amount );
     WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
     Job *requestWork();
-  private:
+private:
     WATCard::FWATCard createJob(unsigned int sid, unsigned int amount, WATCard* card);
 
     Printer & printer;
@@ -50,9 +58,15 @@ _Task WATCardOffice {
     const unsigned int numberOfCouriers;
     std::vector<Courier*> couriers;
     std::deque<WATCardOffice::Job*> jobQueue;
-    uCondition jobLock;
     std::map<unsigned int, WATCard*> studentsWatcard;
 
+    enum States {
+        Start = 'S',
+        Work = 'W',
+        Create = 'C',
+        Transfer = 'T',
+        Finish = 'F'
+    };
 };
 
 #endif

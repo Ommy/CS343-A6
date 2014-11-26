@@ -22,6 +22,15 @@ _Task BottlingPlant {
     bool shuttingDown;
     std::array<unsigned int, VendingMachine::NUMBER_OF_FLAVOURS> shipment;
 
+    Truck* truck;
+
+    enum States {
+        Start = 'S',
+        Generate = 'G',
+        PickUp = 'P',
+        Finish = 'F',
+    };
+
   public:
     _Event Shutdown {};
     BottlingPlant(  Printer &prt, 

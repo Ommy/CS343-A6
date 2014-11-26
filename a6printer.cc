@@ -104,16 +104,10 @@ void Printer::printEverything(std::string placeholder){
     }
     std::cout << std::endl;
 
-    flushInfo();
-}
-
-void Printer::flushInfo(){
-    kindIndex.clear();
     infoState.clear();
 }
 
-Printer::Info::Info( Kind kind, char state ) : 
-kind(kind), state(state) {
+Printer::Info::Info( Kind kind, char state ) : kind(kind), state(state) {
 }
 
 void Printer::Info::print() {
