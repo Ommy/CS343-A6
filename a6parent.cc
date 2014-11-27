@@ -3,6 +3,8 @@
 #include "a6main.h"
 #include "a6bank.h"
 
+#include <iostream>
+
 Parent::Parent( Printer &prt, 
                 Bank &bank, 
                 unsigned int numberOfStudents, 
@@ -11,6 +13,9 @@ Parent::Parent( Printer &prt,
                                                 numberOfStudents(numberOfStudents), 
                                                 parentalDelay(parentalDelay) {
 
+}
+
+Parent::~Parent() {
 }
 
 void Parent::main() {

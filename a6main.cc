@@ -44,30 +44,38 @@ A6::~A6() {
 }
 
 void A6::run() {
-    Printer printer(configParams.numStudents, configParams.numVendingMachines, configParams.numCouriers);
-    Bank bank(configParams.numStudents);
-    Parent parent(printer, bank, configParams.numStudents, configParams.parentalDelay);
-    WATCardOffice office(printer, bank, configParams.numCouriers);
-    NameServer nameServer(printer, configParams.numVendingMachines, configParams.numStudents);
-    BottlingPlant plant(printer, nameServer, configParams.numVendingMachines, configParams.maxShippedPerFlavour, configParams.maxStockPerFlavour, configParams.timeBetweenShipments );
+    Printer * printer = new Printer(configParams.numStudents, configParams.numVendingMachines, configParams.numCouriers);
+    Bank * bank = new Bank(configParams.numStudents);
+    Parent * parent = new Parent(*printer, *bank, configParams.numStudents, configParams.parentalDelay);
+    WATCardOffice * office = new WATCardOffice(*printer, *bank, configParams.numCouriers);
+    NameServer * nameServer = new NameServer(*printer, configParams.numVendingMachines, configParams.numStudents);
+    BottlingPlant * plant = new BottlingPlant(*printer, *nameServer, configParams.numVendingMachines, configParams.maxShippedPerFlavour, configParams.maxStockPerFlavour, configParams.timeBetweenShipments );
 
     std::deque<VendingMachine*> vendingMachines;
     for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
-        vendingMachines.push_back(new VendingMachine(printer, nameServer, i, configParams.sodaCost, configParams.maxStockPerFlavour));
+        vendingMachines.push_back(new VendingMachine(*printer, *nameServer, i, configParams.sodaCost, configParams.maxStockPerFlavour));
     }
 
     std::deque<Student*> students;
     for (unsigned int i = 0; i < configParams.numStudents; ++i) {
-        students.push_back(new Student(printer, nameServer, office, i, configParams.maxPurchases));
+        students.push_back(new Student(*printer, *nameServer, *office, i, configParams.maxPurchases));
     }
 
     for (unsigned int i = 0; i < configParams.numStudents; ++i) {
         delete students[i];
     }
 
+    delete plant;
+
     for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
         delete vendingMachines[i];
     }
+    
+    delete nameServer;
+    delete office;
+    delete parent;
+    delete bank;
+    delete printer;
 }
 
 std::string A6::getCorrectUsage() {

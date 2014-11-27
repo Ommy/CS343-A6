@@ -9,9 +9,16 @@
 
 _Cormonitor Printer;
 
-_Task WATCardOffice {
+_Task WATCardOffice {    
+    enum Type {
+        Exit,
+        CreateJob,
+        TransferJob
+    };
+
     struct Args {
-        Args(unsigned int sid, unsigned amount, WATCard * card) : sid(sid), amount(amount), card(card){}
+        Args(Type type, unsigned int sid, unsigned amount, WATCard * card);
+        Type type;
         unsigned int sid;
         unsigned int amount;
         WATCard * card;
@@ -34,7 +41,7 @@ _Task WATCardOffice {
         WATCardOffice & office;
         const unsigned int id;
 
-        enum States {
+        enum PrintStates {
             Start = 'S',
             StartTransfer = 't',
             CompleteTransfer = 'T',
@@ -51,16 +58,15 @@ public:
     WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
     Job *requestWork();
 private:
-    WATCard::FWATCard createJob(unsigned int sid, unsigned int amount, WATCard* card);
+    WATCard::FWATCard createJob(Type type, unsigned int sid, unsigned int amount, WATCard* card);
 
     Printer & printer;
     Bank & bank;
     const unsigned int numberOfCouriers;
     std::vector<Courier*> couriers;
     std::deque<WATCardOffice::Job*> jobQueue;
-    std::map<unsigned int, WATCard*> studentsWatcard;
 
-    enum States {
+    enum PrintStates {
         Start = 'S',
         Work = 'W',
         Create = 'C',

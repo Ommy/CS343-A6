@@ -4,6 +4,7 @@
 #include "a6printer.h"
 
 #include <algorithm>
+#include <iostream>
 
 BottlingPlant::BottlingPlant(   Printer &prt, 
                                 NameServer &nameServer, 
@@ -49,13 +50,14 @@ void BottlingPlant::main() {
         
         printer.print(Printer::BottlingPlant, (char)Generate, std::accumulate(shipment.begin(), shipment.end(), 0));
         
-        _Accept(~BottlingPlant) {
+        _Accept( ~BottlingPlant ) {
+            shuttingDown = true;
+            _Accept( getShipment );
             break;
         } or _Accept( getShipment ) {
             printer.print(Printer::BottlingPlant, (char)PickUp);
         }
     }
 
-    shuttingDown = true;
     printer.print(Printer::BottlingPlant, (char)Finish);
 }

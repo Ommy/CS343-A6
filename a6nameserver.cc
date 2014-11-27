@@ -1,6 +1,8 @@
 #include "a6nameserver.h"
 #include "a6printer.h"
 
+#include <iostream>
+
 NameServer::NameServer( Printer &prt, 
                         unsigned int numVendingMachines, 
                         unsigned int numStudents ) :    printer(prt),
