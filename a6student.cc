@@ -3,6 +3,8 @@
 #include "a6nameserver.h"
 #include "a6printer.h"
 
+#include <memory>
+
 Student::Student(   Printer &prt, 
                     NameServer &nameServer, 
                     WATCardOffice &cardOffice, 
@@ -15,36 +17,58 @@ Student::Student(   Printer &prt,
 }
 
 Student::~Student() {
-    delete fwatcard();
 }
 
 void Student::main() {
     unsigned int numberOfSodasToPurchase = A6::mprng(1, maxPurchases);
     VendingMachine::Flavours favouriteFlavour = static_cast<VendingMachine::Flavours>(A6::mprng(0, 3));
     VendingMachine* machine = nameServer.getMachine(studentId);
-    
-    fwatcard = cardOffice.create(studentId, 5);
 
+    WATCard::FWATCard fwatcard;
+    fwatcard.cancel();
+    
     printer.print(Printer::Student, studentId, (char)Start, favouriteFlavour, numberOfSodasToPurchase);
 
+    WATCard* watcard;
     unsigned int numberOfSodasPurchased = 0;
     while (numberOfSodasPurchased < numberOfSodasToPurchase) {
+
+        bool hasLostCard = false;
+        while (true) {
+            if (fwatcard.cancelled() || hasLostCard == true) {
+                fwatcard.cancel();
+                fwatcard = cardOffice.create(studentId, 5);
+            }
+
+            try {
+                if (hasLostCard == false) {
+                    yield(A6::mprng(1,10));
+                } else {
+                    hasLostCard = false;
+                }
+
+                watcard = fwatcard();
+                break;
+            } catch (WATCardOffice::Lost& lost) {
+                hasLostCard = true;
+                printer.print(Printer::Student, studentId, (char)Lost);
+            }
+        }
+
         try {
-            yield(A6::mprng(1,10));
-            machine->buy(favouriteFlavour, *fwatcard());
+            machine->buy(favouriteFlavour, *watcard);
             numberOfSodasPurchased++;
-            printer.print(Printer::Student, studentId, (char)Bought, (*fwatcard()).getBalance());
+            printer.print(Printer::Student, studentId, (char)Bought, watcard->getBalance());
         } catch (VendingMachine::Funds& funds) {
-            fwatcard = cardOffice.transfer(studentId, 5 + machine->cost(), fwatcard());
+            fwatcard = cardOffice.transfer(studentId, 5 + machine->cost(), watcard);
         } catch (VendingMachine::Stock& stock) {
             machine = nameServer.getMachine(studentId);
             printer.print(Printer::Student, studentId, (char)Selected, machine->getId());
-        } catch (WATCardOffice::Lost& lost) {
-            fwatcard.cancel();
-            fwatcard = cardOffice.create(studentId, 5);
-            printer.print(Printer::Student, studentId, (char)Lost);
-        }
+        } 
     }
 
+    if (watcard != NULL) {
+        delete watcard;
+    }
     printer.print(Printer::Student, studentId, (char)Finish);
 }

@@ -16,7 +16,6 @@ VendingMachine::VendingMachine( Printer &prt,
     
     nameServer.VMregister(this);
     stock.fill(0);
-    state = Success;
 }
 
 void VendingMachine::buy(Flavours flavour, WATCard &card ) {
@@ -52,6 +51,8 @@ unsigned int VendingMachine::getId() {
 
 void VendingMachine::main() {
     printer.print(Printer::Vending, id, (char)Start, sodaCost);
+
+    state = Success;
 
     while (true) {
         _Accept(~VendingMachine) {

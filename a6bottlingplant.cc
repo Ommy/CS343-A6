@@ -2,9 +2,9 @@
 #include "a6main.h"
 #include "a6truck.h"
 #include "a6printer.h"
+#include "utilities.h"
 
 #include <algorithm>
-#include <iostream>
 
 BottlingPlant::BottlingPlant(   Printer &prt, 
                                 NameServer &nameServer, 
@@ -22,7 +22,6 @@ BottlingPlant::BottlingPlant(   Printer &prt,
 }
 
 BottlingPlant::~BottlingPlant() {
-    delete truck;
 }
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
@@ -40,7 +39,7 @@ void BottlingPlant::getShipment( unsigned int cargo[] ) {
 void BottlingPlant::main() {
     printer.print(Printer::BottlingPlant, (char)Start);
 
-    truck = new Truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour); 
+    Truck truck(printer, nameServer, *this, numberOfVendingMachines, maxStockPerFlavour);
     
     while (true) {
         yield(timeBetweenShipments);
@@ -48,7 +47,7 @@ void BottlingPlant::main() {
             shipment[i] = A6::mprng(maxShippedPerFlavour);
         }
         
-        printer.print(Printer::BottlingPlant, (char)Generate, std::accumulate(shipment.begin(), shipment.end(), 0));
+        printer.print(Printer::BottlingPlant, (char)Generate, sum(shipment));
         
         _Accept( ~BottlingPlant ) {
             shuttingDown = true;

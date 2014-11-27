@@ -3,6 +3,7 @@
 #include "a6nameserver.h"
 #include "a6bottlingplant.h"
 #include "a6printer.h"
+#include "utilities.h"
 
 #include <algorithm>
 #include <iostream>
@@ -36,10 +37,10 @@ void Truck::main() {
             break;
         }
 
-        printer.print(Printer::Truck, (char)PickUp, std::accumulate(cargo.begin(), cargo.end(), 0));
+        printer.print(Printer::Truck, (char)PickUp, sum(cargo));
 
         for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; i = nextMachine(i)) {
-            printer.print(Printer::Truck, (char)Delivery, i, std::accumulate(cargo.begin(), cargo.end(), 0));
+            printer.print(Printer::Truck, (char)Delivery, i, sum(cargo));
 
             unsigned int * inventory = machines[i]->inventory();
             for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; ++flavour) {
@@ -64,7 +65,7 @@ void Truck::main() {
 
             machines[i]->restocked();
 
-            printer.print(Printer::Truck, (char)End, i, std::accumulate(cargo.begin(), cargo.end(), 0));
+            printer.print(Printer::Truck, (char)End, i, sum(cargo));
 
             if (hasNoCargo()) {
                 lastMachineStocked = i;

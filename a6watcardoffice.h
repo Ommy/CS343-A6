@@ -6,6 +6,7 @@
 #include <vector>
 #include <deque>
 #include <map>
+#include <memory>
 
 _Cormonitor Printer;
 
@@ -21,7 +22,7 @@ _Task WATCardOffice {
         Type type;
         unsigned int sid;
         unsigned int amount;
-        WATCard * card;
+        WATCard* card;
     };
 
     struct Job {                           // marshalled arguments and return future
@@ -50,20 +51,12 @@ _Task WATCardOffice {
     };                 // communicates with bank
 
     void main();
-public:
-    _Event Lost {};                        // lost WATCard
-    WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
-    ~WATCardOffice();
-    WATCard::FWATCard create( unsigned int sid, unsigned int amount );
-    WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
-    Job *requestWork();
-private:
     WATCard::FWATCard createJob(Type type, unsigned int sid, unsigned int amount, WATCard* card);
 
     Printer & printer;
     Bank & bank;
     const unsigned int numberOfCouriers;
-    std::vector<Courier*> couriers;
+    std::vector<std::shared_ptr<Courier> > couriers;
     std::deque<WATCardOffice::Job*> jobQueue;
 
     enum PrintStates {
@@ -73,6 +66,14 @@ private:
         Transfer = 'T',
         Finish = 'F'
     };
+
+public:
+    _Event Lost {};                        // lost WATCard
+    WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
+    ~WATCardOffice();
+    WATCard::FWATCard create( unsigned int sid, unsigned int amount );
+    WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
+    Job *requestWork();
 };
 
 #endif
