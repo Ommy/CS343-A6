@@ -15,6 +15,7 @@ _Task Student {
                 WATCardOffice &cardOffice, 
                 unsigned int id, 
                 unsigned int maxPurchases );
+    ~Student();
   private:
     Printer & printer;
     NameServer & nameServer;
@@ -22,8 +23,9 @@ _Task Student {
     const unsigned int studentId;
     const unsigned int maxPurchases;
     VendingMachine * machine;
-    
-    enum States {
+    WATCard::FWATCard fwatcard;
+
+    enum PrintStates {
         Start = 'S',
         Selected = 'V',
         Bought = 'B',

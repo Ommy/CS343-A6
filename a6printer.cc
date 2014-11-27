@@ -52,6 +52,10 @@ Printer::Printer(   unsigned int numberOfStudents,
 }
 
 Printer::~Printer() {
+    for (unsigned int i = 0; i < infoState.size(); ++i) {
+        delete infoState[i];
+    }
+
     std::cout << "***********************" << std::endl;
 }
 
@@ -97,6 +101,7 @@ void Printer::printEverything(std::string placeholder){
     for (unsigned int i = 0; i < numberOfColumns; i++) {
         if (infoState.find(i) != infoState.end()) {
             infoState[i]->print();
+            delete infoState[i];
         } else {
             std::cout << placeholder;
         }

@@ -14,11 +14,16 @@ Student::Student(   Printer &prt,
                                                     maxPurchases(maxPurchases) {
 }
 
+Student::~Student() {
+    delete fwatcard();
+}
+
 void Student::main() {
     unsigned int numberOfSodasToPurchase = A6::mprng(1, maxPurchases);
     VendingMachine::Flavours favouriteFlavour = static_cast<VendingMachine::Flavours>(A6::mprng(0, 3));
     VendingMachine* machine = nameServer.getMachine(studentId);
-    WATCard::FWATCard fwatcard = cardOffice.create(studentId, 5);
+    
+    fwatcard = cardOffice.create(studentId, 5);
 
     printer.print(Printer::Student, studentId, (char)Start, favouriteFlavour, numberOfSodasToPurchase);
 
@@ -40,5 +45,6 @@ void Student::main() {
             printer.print(Printer::Student, studentId, (char)Lost);
         }
     }
+
     printer.print(Printer::Student, studentId, (char)Finish);
 }

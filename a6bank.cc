@@ -5,6 +5,9 @@ Bank::Bank( unsigned int numberOfStudents ) :   numberOfStudents(numberOfStudent
                                                 accountCheck(numberOfStudents) {
 }
 
+Bank::~Bank(){
+}
+
 void Bank::deposit( unsigned int id, unsigned int amount ) {
     bankAccount[id] += amount;
     accountCheck[id].signal();    
@@ -15,7 +18,4 @@ void Bank::withdraw( unsigned int id, unsigned int amount ) {
         accountCheck[id].wait();
     }
     bankAccount[id] -= amount;
-}
-
-Bank::~Bank(){
 }
