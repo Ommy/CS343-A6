@@ -52,11 +52,8 @@ Printer::Printer(   unsigned int numberOfStudents,
 }
 
 Printer::~Printer() {
-    for (unsigned int i = 0; i < infoState.size(); ++i) {
-        delete infoState[i];
-    }
-
     std::cout << "***********************" << std::endl;
+    infoState.clear();
 }
 
 void Printer::print( Kind kind, char state ) {
@@ -72,18 +69,18 @@ void Printer::print( Kind kind, char state, int value1, int value2 ) {
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
-    printInfo(kind, lid, state, new Info(kind, state));
+    printInfo(kind, lid, state, std::shared_ptr<Info>(new Info(kind, state)));
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
-    printInfo(kind, lid, state, new ValueInfo(kind, state, value1));
+    printInfo(kind, lid, state, std::shared_ptr<Info>(new ValueInfo(kind, state, value1)));
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
-    printInfo(kind, lid, state, new ValuesInfo(kind, state, value1, value2));
+    printInfo(kind, lid, state, std::shared_ptr<Info>(new ValuesInfo(kind, state, value1, value2)));
 }
 
-void Printer::printInfo( Kind kind, unsigned int lid, char state, Info* info ) {
+void Printer::printInfo( Kind kind, unsigned int lid, char state, std::shared_ptr<Info> info ) {
     lid += kindIndex[kind];
     if (state == 'F') {
         printEverything("");
@@ -91,7 +88,7 @@ void Printer::printInfo( Kind kind, unsigned int lid, char state, Info* info ) {
         printEverything("...");
     } else if (infoState.find(lid) != infoState.end()) {
         printEverything("");
-        infoState[lid] = info;   
+        infoState[lid] = info; 
     } else {
         infoState[lid] = info;
     }
@@ -101,7 +98,6 @@ void Printer::printEverything(std::string placeholder){
     for (unsigned int i = 0; i < numberOfColumns; i++) {
         if (infoState.find(i) != infoState.end()) {
             infoState[i]->print();
-            delete infoState[i];
         } else {
             std::cout << placeholder;
         }

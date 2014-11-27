@@ -9,21 +9,11 @@ _Cormonitor Printer;
 
 _Task Student {
     void main();
-  public:
-    Student(    Printer &prt, 
-                NameServer &nameServer, 
-                WATCardOffice &cardOffice, 
-                unsigned int id, 
-                unsigned int maxPurchases );
-    ~Student();
-  private:
     Printer & printer;
     NameServer & nameServer;
     WATCardOffice & cardOffice;
     const unsigned int studentId;
     const unsigned int maxPurchases;
-    VendingMachine * machine;
-    WATCard::FWATCard fwatcard;
 
     enum PrintStates {
         Start = 'S',
@@ -32,6 +22,14 @@ _Task Student {
         Lost = 'L',
         Finish = 'F'
     };
+    
+  public:
+    Student(    Printer &prt, 
+                NameServer &nameServer, 
+                WATCardOffice &cardOffice, 
+                unsigned int id, 
+                unsigned int maxPurchases );
+    ~Student();
 };
 
 #endif

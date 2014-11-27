@@ -5,6 +5,7 @@
 #include "a6vendingmachine.h"
 
 #include <array>
+#include <memory>
 
 _Cormonitor Printer;
 _Task Truck;

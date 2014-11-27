@@ -2,6 +2,7 @@
 #define _A6_PRINTER_H__
 
 #include <map>
+#include <memory>
 
 _Cormonitor Printer {
 public:
@@ -41,7 +42,7 @@ private:
     };
 
     void main();
-    void printInfo( Kind kind, unsigned int lid, char state, Info* info );
+    void printInfo( Kind kind, unsigned int lid, char state, std::shared_ptr<Info> info );
     void printEverything(std::string);
 
     const unsigned int numberOfStudents;
@@ -50,7 +51,7 @@ private:
     unsigned int numberOfColumns;
 
     std::map<Kind, unsigned int> kindIndex;
-    std::map<unsigned int, Info*> infoState;
+    std::map<unsigned int, std::shared_ptr<Info>> infoState;
 };
 
 #endif

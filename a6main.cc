@@ -1,7 +1,3 @@
-#include <iostream>
-#include <sstream>
-#include <deque>
-
 #include "a6main.h"
 #include "a6printer.h"
 #include "a6bank.h"
@@ -14,6 +10,11 @@
 #include "a6config.h"
 #include "MPRNG.h"
 #include "utilities.h"
+
+#include <iostream>
+#include <deque>
+#include <memory>
+#include <sstream>
 
 MPRNG A6::mprng;
 
@@ -44,38 +45,60 @@ A6::~A6() {
 }
 
 void A6::run() {
-    Printer * printer = new Printer(configParams.numStudents, configParams.numVendingMachines, configParams.numCouriers);
-    Bank * bank = new Bank(configParams.numStudents);
-    Parent * parent = new Parent(*printer, *bank, configParams.numStudents, configParams.parentalDelay);
-    WATCardOffice * office = new WATCardOffice(*printer, *bank, configParams.numCouriers);
-    NameServer * nameServer = new NameServer(*printer, configParams.numVendingMachines, configParams.numStudents);
-    BottlingPlant * plant = new BottlingPlant(*printer, *nameServer, configParams.numVendingMachines, configParams.maxShippedPerFlavour, configParams.maxStockPerFlavour, configParams.timeBetweenShipments );
+    Printer printer(configParams.numStudents, 
+                                    configParams.numVendingMachines, 
+                                    configParams.numCouriers);
 
-    std::deque<VendingMachine*> vendingMachines;
+    Bank bank(configParams.numStudents);
+    std::unique_ptr<Parent> parent(new Parent(   printer, 
+                                    bank, 
+                                    configParams.numStudents, 
+                                    configParams.parentalDelay));
+
+    std::unique_ptr<WATCardOffice> office(new WATCardOffice( printer, 
+                                                bank, 
+                                                configParams.numCouriers));
+    std::unique_ptr<NameServer> nameServer(new NameServer(   printer, 
+                                                configParams.numVendingMachines, 
+                                                configParams.numStudents));
+    std::unique_ptr<BottlingPlant> plant(new BottlingPlant(  printer, 
+                                                *nameServer, 
+                                                configParams.numVendingMachines, 
+                                                configParams.maxShippedPerFlavour, 
+                                                configParams.maxStockPerFlavour, 
+                                                configParams.timeBetweenShipments ));
+
+    std::deque<std::shared_ptr<VendingMachine> > vendingMachines(configParams.numVendingMachines);
     for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
-        vendingMachines.push_back(new VendingMachine(*printer, *nameServer, i, configParams.sodaCost, configParams.maxStockPerFlavour));
+        vendingMachines[i] = std::shared_ptr<VendingMachine>(new VendingMachine(printer, 
+                                                                                *nameServer, 
+                                                                                i, 
+                                                                                configParams.sodaCost, 
+                                                                                configParams.maxStockPerFlavour));
     }
 
-    std::deque<Student*> students;
+    std::deque<std::shared_ptr<Student> > students(configParams.numStudents);
     for (unsigned int i = 0; i < configParams.numStudents; ++i) {
-        students.push_back(new Student(*printer, *nameServer, *office, i, configParams.maxPurchases));
+        students[i] = std::shared_ptr<Student>(new Student( printer, 
+                                                            *nameServer, 
+                                                            *office, 
+                                                            i, 
+                                                            configParams.maxPurchases));
     }
 
     for (unsigned int i = 0; i < configParams.numStudents; ++i) {
-        delete students[i];
+        students[i].reset();
     }
 
-    delete plant;
+    plant.reset();
 
     for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
-        delete vendingMachines[i];
+        vendingMachines[i].reset();
     }
     
-    delete nameServer;
-    delete office;
-    delete parent;
-    delete bank;
-    delete printer;
+    nameServer.reset();
+    office.reset();
+    parent.reset();
 }
 
 std::string A6::getCorrectUsage() {

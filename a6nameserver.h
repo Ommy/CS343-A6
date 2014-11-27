@@ -18,7 +18,7 @@ _Task NameServer {
     VendingMachine *getMachine( unsigned int id );
     VendingMachine **getMachineList();
 
-    enum States {
+    enum PrintStates {
         Start = 'S',
         Register = 'R',
         New = 'N',
