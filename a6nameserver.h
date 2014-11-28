@@ -4,6 +4,7 @@
 #include "a6vendingmachine.h"
 
 #include <map>
+#include <deque>
 #include <vector>
 
 _Cormonitor Printer;
@@ -31,10 +32,11 @@ _Task NameServer {
     const unsigned int numberOfStudents;
     const unsigned int numberOfVendingMachines;
 
-    unsigned int numberOfMachinesRegistered;
-    std::vector<VendingMachine*> machines;
-    std::vector<unsigned int> machineAssignments;
+    std::deque<unsigned int> machineIds;
+    std::map<unsigned int, unsigned int> studentsMachine;
+    std::vector<VendingMachine*> idToMachine;
     uCondition vendingMachineLock;
+
 };
 
 #endif
