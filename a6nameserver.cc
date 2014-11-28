@@ -8,12 +8,8 @@ NameServer::NameServer( Printer &prt,
                         unsigned int numStudents ) :    printer(prt),
                                                         numberOfStudents(numStudents),
                                                         numberOfVendingMachines(numVendingMachines),
-                                                        numberOfMachinesRegistered(0),
-                                                        machines(numberOfVendingMachines),
-                                                        machineAssignments(numberOfStudents) {
-    for (unsigned int i = 0; i < numberOfStudents; i++) {
-        machineAssignments[i] = i % numberOfVendingMachines;
-    }
+                                                        idToMachine(numberOfVendingMachines)
+                                                        {
 }
 
 NameServer::~NameServer(){
@@ -21,21 +17,26 @@ NameServer::~NameServer(){
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
     printer.print(Printer::NameServer, (char)Register, vendingmachine->getId());
-    machines[numberOfMachinesRegistered] = vendingmachine;
-    numberOfMachinesRegistered += 1;
+
+    idToMachine[vendingmachine->getId()] = vendingmachine;
+    machineIds.push_back(vendingmachine->getId());
+
+    if (machineIds.size() == numberOfVendingMachines) {
+        for (unsigned int sid = 0; sid < numberOfStudents; sid++) {
+            studentsMachine[sid] = machineIds[(sid % numberOfVendingMachines)];
+        }
+    }
 }
 
-VendingMachine * NameServer::getMachine( unsigned int id ) {
-    unsigned int current = machineAssignments[id];
-    unsigned int next = (current + 1) % numberOfVendingMachines;
-    machineAssignments[id] = next;
-
-    printer.print(Printer::NameServer, (char)New, id, next);
-    return machines[machineAssignments[id]];
+VendingMachine * NameServer::getMachine( unsigned int sid ) {
+    unsigned int current = studentsMachine[sid];
+    printer.print(Printer::NameServer, (char)New, sid, idToMachine[current]->getId());
+    studentsMachine[sid] = (current + 1) % numberOfVendingMachines;
+    return idToMachine[current];
 }
 
 VendingMachine ** NameServer::getMachineList() {
-    return machines.data();
+    return idToMachine.data();
 }
 
 void NameServer::main() {
@@ -44,9 +45,9 @@ void NameServer::main() {
     while (true) {
         _Accept (~NameServer) {
             break;
-        } or _When(numberOfMachinesRegistered < numberOfVendingMachines) _Accept ( VMregister ) {
+        } or _When(machineIds.size() < numberOfVendingMachines) _Accept ( VMregister ) {
 
-        } or _When(numberOfMachinesRegistered == numberOfVendingMachines) _Accept ( getMachine, getMachineList ) {
+        } or _When(machineIds.size() == numberOfVendingMachines) _Accept ( getMachine, getMachineList ) {
 
         }
     }

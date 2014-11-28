@@ -61,14 +61,9 @@ void A6::run() {
     std::unique_ptr<NameServer> nameServer(new NameServer(   printer, 
                                                 configParams.numVendingMachines, 
                                                 configParams.numStudents));
-    std::unique_ptr<BottlingPlant> plant(new BottlingPlant(  printer, 
-                                                *nameServer, 
-                                                configParams.numVendingMachines, 
-                                                configParams.maxShippedPerFlavour, 
-                                                configParams.maxStockPerFlavour, 
-                                                configParams.timeBetweenShipments ));
 
     std::deque<std::shared_ptr<VendingMachine> > vendingMachines(configParams.numVendingMachines);
+
     for (unsigned int i = 0; i < configParams.numVendingMachines; ++i) {
         vendingMachines[i] = std::shared_ptr<VendingMachine>(new VendingMachine(printer, 
                                                                                 *nameServer, 
@@ -76,6 +71,13 @@ void A6::run() {
                                                                                 configParams.sodaCost, 
                                                                                 configParams.maxStockPerFlavour));
     }
+    
+    std::unique_ptr<BottlingPlant> plant(new BottlingPlant(  printer, 
+                                                *nameServer, 
+                                                configParams.numVendingMachines, 
+                                                configParams.maxShippedPerFlavour, 
+                                                configParams.maxStockPerFlavour, 
+                                                configParams.timeBetweenShipments ));
 
     std::deque<std::shared_ptr<Student> > students(configParams.numStudents);
     for (unsigned int i = 0; i < configParams.numStudents; ++i) {

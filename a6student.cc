@@ -4,6 +4,7 @@
 #include "a6printer.h"
 
 #include <memory>
+#include <iostream>
 
 Student::Student(   Printer &prt, 
                     NameServer &nameServer, 
@@ -20,14 +21,17 @@ Student::~Student() {
 }
 
 void Student::main() {
-    unsigned int numberOfSodasToPurchase = A6::mprng(1, maxPurchases);
+    unsigned int numberOfSodasToPurchase = A6::mprng(1, maxPurchases);    
     VendingMachine::Flavours favouriteFlavour = static_cast<VendingMachine::Flavours>(A6::mprng(0, 3));
+    
+    printer.print(Printer::Student, studentId, (char)Start, favouriteFlavour, numberOfSodasToPurchase);
+
     VendingMachine* machine = nameServer.getMachine(studentId);
+    printer.print(Printer::Student, studentId, (char)Selected, machine->getId());
 
     WATCard::FWATCard fwatcard;
     fwatcard.cancel();
     
-    printer.print(Printer::Student, studentId, (char)Start, favouriteFlavour, numberOfSodasToPurchase);
 
     WATCard* watcard;
     unsigned int numberOfSodasPurchased = 0;

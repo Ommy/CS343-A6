@@ -25,9 +25,9 @@ Truck::~Truck() {
 }
 
 void Truck::main() {
-    printer.print(Printer::Truck, (char)Start);
-
     VendingMachine** machines = server.getMachineList();
+    printer.print(Printer::Truck, (char)Start);
+    unsigned int currentMachine;
     while (true) {
         yield(A6::mprng(1,10));
 
@@ -39,11 +39,13 @@ void Truck::main() {
 
         printer.print(Printer::Truck, (char)PickUp, sum(cargo));
 
-        for (unsigned int i = nextMachine(lastMachineStocked); i != lastMachineStocked; i = nextMachine(i)) {
-            printer.print(Printer::Truck, (char)Delivery, i, sum(cargo));
+        currentMachine = nextMachine(lastMachineStocked);
 
-            unsigned int * inventory = machines[i]->inventory();
-            for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; ++flavour) {
+        do {
+            printer.print(Printer::Truck, (char)Delivery, currentMachine, sum(cargo));
+
+            unsigned int * inventory = machines[currentMachine]->inventory();
+            for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
                 unsigned int currentStock = inventory[flavour];
                 if (currentStock + cargo[flavour] > maxStockPerFlavour) {
                     inventory[flavour] = maxStockPerFlavour;
@@ -60,18 +62,19 @@ void Truck::main() {
             }
             
             if (amountInInventory < numberOfVendingMachines * maxStockPerFlavour) {
-                printer.print(Printer::Truck, (char)Unsuccessful, i, numberOfVendingMachines * maxStockPerFlavour - amountInInventory);
+                printer.print(Printer::Truck, (char)Unsuccessful, currentMachine, numberOfVendingMachines * maxStockPerFlavour - amountInInventory);
             }
 
-            machines[i]->restocked();
+            machines[currentMachine]->restocked();
 
-            printer.print(Printer::Truck, (char)End, i, sum(cargo));
+            printer.print(Printer::Truck, (char)End, currentMachine, sum(cargo));
 
             if (hasNoCargo()) {
-                lastMachineStocked = i;
+                lastMachineStocked = currentMachine;
                 break;
             }
-        }
+            currentMachine = nextMachine(currentMachine);
+        } while (currentMachine != nextMachine(lastMachineStocked));
     }
 
     printer.print(Printer::Truck, (char)Finish);

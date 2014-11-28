@@ -11,9 +11,6 @@ WATCardOffice::WATCardOffice(   Printer &prt,
                                                             bank(bank), 
                                                             numberOfCouriers(numCouriers),
                                                             couriers(numberOfCouriers) {
-    for (unsigned int i = 0; i < numberOfCouriers; i++) {
-        couriers[i] = std::shared_ptr<Courier>(new Courier(prt, bank, *this, i));
-    }
 }
 
 WATCardOffice::~WATCardOffice() {
@@ -44,6 +41,10 @@ WATCardOffice::Job * WATCardOffice::requestWork() {
 
 void WATCardOffice::main() {
     printer.print(Printer::WATCardOffice, (char)Start);
+
+    for (unsigned int i = 0; i < numberOfCouriers; i++) {
+        couriers[i] = std::shared_ptr<Courier>(new Courier(printer, bank, *this, i));
+    }
 
     while (true) {
         _Accept(~WATCardOffice) {
@@ -110,14 +111,14 @@ void WATCardOffice::Courier::main() {
                 return;
         }
 
-        printer.print(Printer::Courier, id, (char)StartTransfer);
+        printer.print(Printer::Courier, id, (char)StartTransfer, args.sid, args.amount);
         
         bank.withdraw(args.sid, args.amount);
         card->deposit(args.amount);
 
-        printer.print(Printer::Courier, id, (char)CompleteTransfer);
+        printer.print(Printer::Courier, id, (char)CompleteTransfer, args.sid, args.amount);
 
-        if (A6::mprng(5) == 0) {
+        if (A6::mprng(1, 6) == 1) {
             delete card;
             job->result.exception(new WATCardOffice::Lost());
         } else {
