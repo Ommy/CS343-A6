@@ -11,17 +11,17 @@
 _Cormonitor Printer;
 
 _Task WATCardOffice {    
-    enum Type {
-        Exit,
+    enum JobType {
+        KillJob,
         CreateJob,
         TransferJob
     };
 
     struct Args {
-        Args(Type type, unsigned int sid, unsigned amount, WATCard * card);
-        Type type;
-        unsigned int sid;
-        unsigned int amount;
+        Args(JobType type, unsigned int sid, unsigned amount, WATCard * card);
+        const JobType type;
+        const unsigned int sid;
+        const unsigned int amount;
         WATCard* card;
     };
 
@@ -51,7 +51,7 @@ _Task WATCardOffice {
     };                 // communicates with bank
 
     void main();
-    WATCard::FWATCard createJob(Type type, unsigned int sid, unsigned int amount, WATCard* card);
+    WATCard::FWATCard createJob(JobType type, unsigned int sid, unsigned int amount, WATCard* card);
 
     Printer & printer;
     Bank & bank;
@@ -69,7 +69,7 @@ _Task WATCardOffice {
 
 public:
     _Event Lost {};                        // lost WATCard
-    WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
+    WATCardOffice( Printer &prt, Bank &bank, unsigned int numberOfCouriers );
     ~WATCardOffice();
     WATCard::FWATCard create( unsigned int sid, unsigned int amount );
     WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );

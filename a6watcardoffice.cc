@@ -7,16 +7,16 @@
 
 WATCardOffice::WATCardOffice(   Printer &prt, 
                                 Bank &bank, 
-                                unsigned int numCouriers) : printer(prt), 
+                                unsigned int numberOfCouriers) : printer(prt), 
                                                             bank(bank), 
-                                                            numberOfCouriers(numCouriers),
+                                                            numberOfCouriers(numberOfCouriers),
                                                             couriers(numberOfCouriers) {
 }
 
 WATCardOffice::~WATCardOffice() {
 }
 
-WATCard::FWATCard WATCardOffice::createJob(Type type, unsigned int sid, unsigned int amount, WATCard *card) {
+WATCard::FWATCard WATCardOffice::createJob(JobType type, unsigned int sid, unsigned int amount, WATCard *card) {
     WATCardOffice::Args arg(type, sid, amount, card);
     WATCardOffice::Job* job = new WATCardOffice::Job(arg);
     jobQueue.push_back(job);
@@ -56,10 +56,8 @@ void WATCardOffice::main() {
         }
     }
 
-    printer.print(Printer::WATCardOffice, (char)Finish);
-
     for (unsigned int i = 0; i < couriers.size(); ++i) {
-        createJob(Exit, 0, 0, NULL);
+        createJob(KillJob, 0, 0, NULL);
     }
 
     while (!jobQueue.empty()) {
@@ -69,9 +67,11 @@ void WATCardOffice::main() {
     for (unsigned int i = 0; i < couriers.size(); ++i) {
         couriers[i].reset();
     }
+
+    printer.print(Printer::WATCardOffice, (char)Finish);
 }
 
-WATCardOffice::Args::Args(  Type type, 
+WATCardOffice::Args::Args(  JobType type, 
                             unsigned int sid, 
                             unsigned amount, 
                             WATCard * card) :   type(type),
@@ -97,18 +97,16 @@ void WATCardOffice::Courier::main() {
     while (true) {
         std::unique_ptr<WATCardOffice::Job> job(office.requestWork());
 
-        Args args = job->args;
         WATCard* card = NULL;
-        switch (args.type) {
-            case CreateJob:
-                card = new WATCard();
-                break;
-            case TransferJob:
-                card = args.card;
-                break;
-            default:
-                printer.print(Printer::Courier, id, (char)Finish);
-                return;
+        Args args = job->args;
+        if (args.type == KillJob) {
+            break;
+        }
+
+        if (args.type == CreateJob) {
+            card = new WATCard();
+        } else if (args.type == TransferJob) {
+            card = args.card;
         }
 
         printer.print(Printer::Courier, id, (char)StartTransfer, args.sid, args.amount);
@@ -125,4 +123,6 @@ void WATCardOffice::Courier::main() {
             job->result.delivery(card);
         }
     }
+
+    printer.print(Printer::Courier, id, (char)Finish);
 }

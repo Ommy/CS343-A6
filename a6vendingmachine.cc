@@ -18,20 +18,24 @@ VendingMachine::VendingMachine( Printer &prt,
     stock.fill(0);
 }
 
-void VendingMachine::buy(Flavours flavour, WATCard &card ) {
-    buyFlavour = flavour;
-    buyCard = &card;
-    waitCondition.wait();
+VendingMachine::BuyOrder::BuyOrder(   Flavours flavour, 
+                            WATCard& watcard ) :    flavour(flavour), 
+                                                    watcard(watcard),
+                                                    result(Success) 
+{
+}
 
-    if (state == InsufficientFunds) {
+void VendingMachine::buy(Flavours flavour, WATCard &watcard ) {
+    order = std::shared_ptr<BuyOrder>(new BuyOrder(flavour, watcard));
+    processOrderCondition.wait();
+
+    if (order->result == InsufficientFunds) {
         uRendezvousAcceptor();
         throw Funds();
-    } else if (state == InsufficientStock) {
+    } else if (order->result == InsufficientStock) {
         uRendezvousAcceptor();
         throw Stock();
     }
-    
-    state = Success;
 }
 
 unsigned int * VendingMachine::inventory() {
@@ -52,8 +56,6 @@ unsigned int VendingMachine::getId() {
 void VendingMachine::main() {
     printer.print(Printer::Vending, id, (char)Start, sodaCost);
 
-    state = Success;
-
     while (true) {
         _Accept(~VendingMachine) {
             break;
@@ -63,17 +65,21 @@ void VendingMachine::main() {
                 printer.print(Printer::Vending, id, (char)CompleteReload);
             }
         } or _Accept ( buy ) {
-            if (buyCard->getBalance() < sodaCost) {
-                state = InsufficientFunds;
-            } else if (stock[buyFlavour] == 0) {
-                state = InsufficientStock;
+            WATCard& watcard = order->watcard;
+            unsigned int flavour = static_cast<int>(order->flavour);
+            if (watcard.getBalance() < sodaCost) {
+                order->result = InsufficientFunds;
+            } else if (stock[flavour] == 0) {
+                order->result = InsufficientStock;
             } else {
-                buyCard->withdraw(sodaCost);
-                stock[static_cast<int>(buyFlavour)] -= 1;
-                printer.print(Printer::Vending, id, (char)Bought, buyFlavour, stock[static_cast<int>(buyFlavour)]);
-                state = Success;
+                watcard.withdraw(sodaCost);
+                stock[flavour] -= 1;
+                order->result = Success;
+
+                printer.print(Printer::Vending, id, (char)Bought, flavour, stock[flavour]);
             }
-            waitCondition.signalBlock();
+
+            processOrderCondition.signalBlock();
         }
     }
 

@@ -21,12 +21,9 @@ _Task BottlingPlant {
     const unsigned int timeBetweenShipments;
 
     bool shuttingDown;
-    uCondition shuttingDownCondition;
     std::array<unsigned int, VendingMachine::NUMBER_OF_FLAVOURS> shipment;
 
-    Truck* truck;
-
-    enum States {
+    enum PrintStates {
         Start = 'S',
         Generate = 'G',
         PickUp = 'P',

@@ -13,24 +13,22 @@ _Task Truck {
     Truck(  Printer &prt, 
             NameServer &nameServer, 
             BottlingPlant &plant,
-            unsigned int numVendingMachines, 
+            unsigned int numberOfVendingMachines, 
             unsigned int maxStockPerFlavour );
     ~Truck();
   private:
     void main();
-    bool hasNoCargo();
-    unsigned int nextMachine(unsigned int);
 
     Printer& printer;
     NameServer& server;
     BottlingPlant& bottlingPlant;
     const unsigned int numberOfVendingMachines;
     const unsigned int maxStockPerFlavour;
-    unsigned int lastMachineStocked;
+    unsigned int currentMachine;
 
     std::vector<unsigned int> cargo;
 
-    enum States {
+    enum PrintStates {
         Start = 'S',
         PickUp = 'P',
         Delivery = 'd',

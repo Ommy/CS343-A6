@@ -11,14 +11,16 @@
 Truck::Truck(   Printer &prt, 
                 NameServer &nameServer, 
                 BottlingPlant &plant,
-                unsigned int numVendingMachines, 
+                unsigned int numberOfVendingMachines, 
                 unsigned int maxStockPerFlavour) :  printer(prt),
                                                     server(nameServer),
                                                     bottlingPlant(plant),
-                                                    numberOfVendingMachines(numVendingMachines),
+                                                    numberOfVendingMachines(numberOfVendingMachines),
                                                     maxStockPerFlavour(maxStockPerFlavour),
-                                                    lastMachineStocked(0),
-                                                    cargo(VendingMachine::NUMBER_OF_FLAVOURS) {
+                                                    // set to numberOfVendingMachines - 1 to start with 0th machine
+                                                    currentMachine(numberOfVendingMachines - 1), 
+                                                    cargo(VendingMachine::NUMBER_OF_FLAVOURS) 
+{
 }
 
 Truck::~Truck() {
@@ -27,7 +29,7 @@ Truck::~Truck() {
 void Truck::main() {
     VendingMachine** machines = server.getMachineList();
     printer.print(Printer::Truck, (char)Start);
-    unsigned int currentMachine;
+
     while (true) {
         yield(A6::mprng(1,10));
 
@@ -39,51 +41,48 @@ void Truck::main() {
 
         printer.print(Printer::Truck, (char)PickUp, sum(cargo));
 
-        currentMachine = nextMachine(lastMachineStocked);
+        unsigned int finalMachine = currentMachine;
+        while (true) { 
 
-        do {
+            // only deliver if there is cargo
+            if (sum(cargo) == 0) {
+                break;
+            }
+
+            currentMachine = (currentMachine + 1) % numberOfVendingMachines;
+
             printer.print(Printer::Truck, (char)Delivery, currentMachine, sum(cargo));
 
-            unsigned int * inventory = machines[currentMachine]->inventory();
-            for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
-                unsigned int currentStock = inventory[flavour];
-                if (currentStock + cargo[flavour] > maxStockPerFlavour) {
-                    inventory[flavour] = maxStockPerFlavour;
-                    cargo[flavour] -= (maxStockPerFlavour - currentStock);
-                } else {
-                    inventory[flavour] += cargo[flavour];
-                    cargo[flavour] = 0;
+            {   // check inventory of vending machine
+                unsigned int * inventory = machines[currentMachine]->inventory();
+                for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++) {
+                    unsigned int currentStock = inventory[flavour];
+                    if (currentStock + cargo[flavour] > maxStockPerFlavour) {
+                        inventory[flavour] = maxStockPerFlavour;
+                        cargo[flavour] -= (maxStockPerFlavour - currentStock);
+                    } else {
+                        inventory[flavour] += cargo[flavour];
+                        cargo[flavour] = 0;
+                    }
                 }
-            }
 
-            unsigned int amountInInventory = 0;
-            for (unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; ++flavour) {
-                amountInInventory += inventory[flavour];
-            }
-            
-            if (amountInInventory < numberOfVendingMachines * maxStockPerFlavour) {
-                printer.print(Printer::Truck, (char)Unsuccessful, currentMachine, numberOfVendingMachines * maxStockPerFlavour - amountInInventory);
+                unsigned int amountInInventory = sum(inventory, (unsigned int)VendingMachine::NUMBER_OF_FLAVOURS);
+                unsigned int maxStockPossible = numberOfVendingMachines * maxStockPerFlavour;
+                if (amountInInventory < maxStockPossible) {
+                    unsigned int availableSpace = maxStockPossible - amountInInventory;
+                    printer.print(Printer::Truck, (char)Unsuccessful, currentMachine, availableSpace);
+                }
             }
 
             machines[currentMachine]->restocked();
 
             printer.print(Printer::Truck, (char)End, currentMachine, sum(cargo));
 
-            if (hasNoCargo()) {
-                lastMachineStocked = currentMachine;
+            if ( currentMachine == finalMachine ) {
                 break;
             }
-            currentMachine = nextMachine(currentMachine);
-        } while (currentMachine != nextMachine(lastMachineStocked));
+        }
     }
 
     printer.print(Printer::Truck, (char)Finish);
-}
-
-bool Truck::hasNoCargo() {
-    return (unsigned int)std::count(cargo.begin(), cargo.end(), 0) == cargo.size();
-}
-
-unsigned int Truck::nextMachine(unsigned int machine) {
-    return ((machine + 1) % numberOfVendingMachines);
 }

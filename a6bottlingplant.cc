@@ -4,8 +4,6 @@
 #include "a6printer.h"
 #include "utilities.h"
 
-#include <algorithm>
-
 BottlingPlant::BottlingPlant(   Printer &prt, 
                                 NameServer &nameServer, 
                                 unsigned int numberOfVendingMachines, 
@@ -43,11 +41,12 @@ void BottlingPlant::main() {
     
     while (true) {
         yield(timeBetweenShipments);
+
         for (unsigned int i = 0; i < VendingMachine::NUMBER_OF_FLAVOURS; ++i) {
             shipment[i] = A6::mprng(maxShippedPerFlavour);
         }
         
-        printer.print(Printer::BottlingPlant, (char)Generate, sum(shipment));
+        printer.print(Printer::BottlingPlant, (char)Generate, sum(std::begin(shipment), std::end(shipment)));
         
         _Accept( ~BottlingPlant ) {
             shuttingDown = true;

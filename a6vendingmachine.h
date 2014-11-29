@@ -4,6 +4,7 @@
 #include "a6watcard.h"
 
 #include <array>
+#include <memory>
 
 _Cormonitor Printer;
 _Task NameServer;
@@ -25,7 +26,7 @@ _Task VendingMachine {
                     unsigned int id, 
                     unsigned int sodaCost,
                     unsigned int maxStockPerFlavour );
-    void buy( Flavours flavour, WATCard &card );
+    void buy( Flavours flavour, WATCard &watcard );
     unsigned int *inventory();
     void restocked();
     _Nomutex unsigned int cost();
@@ -37,6 +38,13 @@ private:
         Success
     };
 
+    struct BuyOrder {
+        Flavours flavour;
+        WATCard& watcard;
+        State result;
+        BuyOrder(Flavours flavour, WATCard& watcard);
+    };
+
     void main();
 
     Printer& printer;
@@ -46,10 +54,8 @@ private:
     const unsigned int maxStockPerFlavour;
 
     std::array<unsigned int, NUMBER_OF_FLAVOURS> stock;
-    State state;
-    Flavours buyFlavour;
-    WATCard* buyCard;
-    uCondition waitCondition;
+    std::shared_ptr<BuyOrder> order;
+    uCondition processOrderCondition;
 
     enum PrintStates {
         Start = 'S',

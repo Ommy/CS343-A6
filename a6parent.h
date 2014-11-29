@@ -13,7 +13,7 @@ _Task Parent {
     const unsigned int numberOfStudents;
     const unsigned int parentalDelay;
 
-    enum States {
+    enum PrintStates {
         Start = 'S',
         Deposit = 'D',
         Finish = 'F'

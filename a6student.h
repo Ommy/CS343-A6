@@ -9,11 +9,13 @@ _Cormonitor Printer;
 
 _Task Student {
     void main();
+    
     Printer & printer;
     NameServer & nameServer;
     WATCardOffice & cardOffice;
     const unsigned int studentId;
     const unsigned int maxPurchases;
+    static const unsigned int INITIAL_BALANCE = 5;
 
     enum PrintStates {
         Start = 'S',
