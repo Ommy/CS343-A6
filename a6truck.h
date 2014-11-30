@@ -24,7 +24,6 @@ _Task Truck {
     BottlingPlant& bottlingPlant;
     const unsigned int numberOfVendingMachines;
     const unsigned int maxStockPerFlavour;
-    unsigned int currentMachine;
 
     std::vector<unsigned int> cargo;
 

@@ -17,8 +17,6 @@ Truck::Truck(   Printer &prt,
                                                     bottlingPlant(plant),
                                                     numberOfVendingMachines(numberOfVendingMachines),
                                                     maxStockPerFlavour(maxStockPerFlavour),
-                                                    // set to numberOfVendingMachines - 1 to start with 0th machine
-                                                    currentMachine(numberOfVendingMachines - 1), 
                                                     cargo(VendingMachine::NUMBER_OF_FLAVOURS) 
 {
 }
@@ -30,6 +28,8 @@ void Truck::main() {
     VendingMachine** machines = server.getMachineList();
     printer.print(Printer::Truck, (char)Start);
 
+    // set to numberOfVendingMachines - 1 to start with 0th machine
+    unsigned int currentMachine = numberOfVendingMachines - 1;
     while (true) {
         yield(A6::mprng(1,10));
 
