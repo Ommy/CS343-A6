@@ -6,7 +6,16 @@
 
 _Cormonitor Printer {
 public:
-    enum Kind { Parent, WATCardOffice, NameServer, Truck, BottlingPlant, Student, Vending, Courier };
+    enum Kind { Parent, 
+                WATCardOffice, 
+                NameServer, 
+                Truck, 
+                BottlingPlant, 
+                Student, 
+                Vending, 
+                Courier
+    };
+    
     Printer( unsigned int numberOfStudents, unsigned int numberOfVendingMachines, unsigned int numberOfCouriers );
     ~Printer();
     void print( Kind kind, char state );
@@ -50,8 +59,8 @@ private:
     const unsigned int numberOfCouriers;
     unsigned int numberOfColumns;
 
-    std::map<Kind, unsigned int> kindIndex;
-    std::map<unsigned int, std::shared_ptr<Info>> infoState;
+    std::map<Kind, unsigned int> columnForKind;
+    std::map<unsigned int, std::shared_ptr<Info>> currentInfoState;
 };
 
 #endif

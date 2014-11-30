@@ -28,4 +28,4 @@ clean: # remove files that can be regenerated
 	rm -f *.d *.o ${EXECS}
 
 style:
-	./astyle/build/gcc/bin/astyle --style=java  --indent=spaces --suffix=none --add-one-line-brackets --add-brackets --convert-tabs --pad-paren-in --align-reference=type --align-pointer=type --max-code-length=100 *.cc *.h
+	./astyle/build/gcc/bin/astyle --style=java --lineend=linux --indent=spaces --suffix=none --add-one-line-brackets --add-brackets --convert-tabs --pad-paren-in --align-reference=type --align-pointer=type --max-code-length=100 --close-templates --mode=cs *.cc *.h

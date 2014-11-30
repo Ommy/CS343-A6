@@ -1,6 +1,5 @@
 #include "utilities.h"
 
-#include <algorithm>
 #include <limits>
 
 bool convertToSignedInteger( int& val, char* buffer ) {
@@ -18,14 +17,18 @@ bool convertToUnsignedInteger( unsigned int& val, char* buffer ) {
            && std::string( buffer ).find_first_not_of( " ", ss.tellg() ) == std::string::npos;
 }
 
-unsigned int sum( std::vector<unsigned int>& vector ) {
-    return std::accumulate( vector.begin(), vector.end(), 0);
+unsigned int sum( const std::vector<unsigned int>& vector ) {
+    return sum( vector.begin(), vector.end());
 }
 
-unsigned int sum( std::deque<unsigned int>& deque ) {
-    return std::accumulate( deque.begin(), deque.end(), 0);
+unsigned int sum( const std::deque<unsigned int>& deque ) {
+    return sum( deque.begin(), deque.end());
 }
 
-unsigned int sum( std::array<unsigned int, VendingMachine::NUMBER_OF_FLAVOURS>& array ) {
-    return std::accumulate( array.begin(), array.end(), 0);
+unsigned int sum( const unsigned int* array, const unsigned int size) {
+    unsigned int total = 0;
+    for (unsigned int i = 0; i < size; ++i) {
+        total += array[size];
+    }
+    return total;
 }

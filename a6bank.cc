@@ -1,21 +1,23 @@
 #include "a6bank.h"
 
 Bank::Bank( unsigned int numberOfStudents ) :   numberOfStudents(numberOfStudents), 
-                                                bankAccount(numberOfStudents, 0), 
-                                                accountCheck(numberOfStudents) {
+                                                bankAccounts(numberOfStudents, 0), 
+                                                notEnoughMoneyConditions(numberOfStudents) {
 }
 
 Bank::~Bank(){
 }
 
 void Bank::deposit( unsigned int id, unsigned int amount ) {
-    bankAccount[id] += amount;
-    accountCheck[id].signal();    
+    bankAccounts[id] += amount;
+    while (!notEnoughMoneyConditions[id].empty()) {
+        notEnoughMoneyConditions[id].signal();
+    }
 }
 
 void Bank::withdraw( unsigned int id, unsigned int amount ) {
-    while (bankAccount[id] < amount) {
-        accountCheck[id].wait();
+    while (bankAccounts[id] < amount) {
+        notEnoughMoneyConditions[id].wait();
     }
-    bankAccount[id] -= amount;
+    bankAccounts[id] -= amount;
 }
