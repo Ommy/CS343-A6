@@ -7,7 +7,7 @@ _Monitor Bank {
     const unsigned int numberOfStudents;
     std::vector<unsigned int> bankAccounts;
     std::vector<uCondition> notEnoughMoneyConditions;
-  public:
+    public:
     Bank( unsigned int numStudents );
     ~Bank();
     void deposit( unsigned int id, unsigned int amount );

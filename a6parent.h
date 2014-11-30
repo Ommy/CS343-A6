@@ -17,9 +17,9 @@ _Task Parent {
         Start = 'S',
         Deposit = 'D',
         Finish = 'F'
-    };    
+    };
 
-  public:
+    public:
     Parent( Printer &prt, Bank &bank, unsigned int numberOfStudents, unsigned int parentalDelay );
     ~Parent();
 };

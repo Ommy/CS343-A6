@@ -10,7 +10,7 @@
 
 _Cormonitor Printer;
 
-_Task WATCardOffice {    
+_Task WATCardOffice {
     enum JobType {
         KillJob,
         CreateJob,
@@ -18,7 +18,7 @@ _Task WATCardOffice {
     };
 
     struct Args {
-        Args(JobType type, unsigned int sid, unsigned amount, WATCard * card);
+        Args( JobType type, unsigned int sid, unsigned amount, WATCard * card );
         const JobType type;
         const unsigned int sid;
         const unsigned int amount;
@@ -30,16 +30,16 @@ _Task WATCardOffice {
         WATCard::FWATCard result;          // return future
         Job( Args args ) : args( args ) {}
     };
-    
-    _Task Courier { 
-      public:
-        Courier(Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id);
-      private:
+
+    _Task Courier {
+        public:
+        Courier( Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id );
+        private:
         void main();
 
-        Printer & printer;
-        Bank & bank;
-        WATCardOffice & office;
+        Printer& printer;
+        Bank& bank;
+        WATCardOffice& office;
         const unsigned int id;
 
         enum PrintStates {
@@ -51,12 +51,12 @@ _Task WATCardOffice {
     };                 // communicates with bank
 
     void main();
-    WATCard::FWATCard createJob(JobType type, unsigned int sid, unsigned int amount, WATCard* card);
+    WATCard::FWATCard createJob( JobType type, unsigned int sid, unsigned int amount, WATCard* card );
 
-    Printer & printer;
-    Bank & bank;
+    Printer& printer;
+    Bank& bank;
     const unsigned int numberOfCouriers;
-    std::vector<std::shared_ptr<Courier> > couriers;
+    std::vector<std::shared_ptr<Courier>> couriers;
     std::deque<WATCardOffice::Job*> jobQueue;
 
     enum PrintStates {
@@ -67,7 +67,7 @@ _Task WATCardOffice {
         Finish = 'F'
     };
 
-public:
+    public:
     _Event Lost {};                        // lost WATCard
     WATCardOffice( Printer &prt, Bank &bank, unsigned int numberOfCouriers );
     ~WATCardOffice();

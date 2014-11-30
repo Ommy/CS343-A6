@@ -13,10 +13,9 @@ struct ConfigParams {
     unsigned int numCouriers;              // number of couriers in the pool
 };
 
-class Config
-{
-public:
-    static void processConfigFile( const char *configFile, ConfigParams &params );
+class Config {
+    public:
+    static void processConfigFile( const char* configFile, ConfigParams& params );
 };
 
 #endif

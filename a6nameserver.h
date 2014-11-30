@@ -10,18 +10,18 @@
 _Cormonitor Printer;
 
 _Task NameServer {
-  public:
-    NameServer( Printer &prt, 
-                unsigned int numberOfVendingMachines, 
-                unsigned int numberOfStudents );
+    public:
+    NameServer( Printer &prt,
+    unsigned int numberOfVendingMachines,
+    unsigned int numberOfStudents );
     ~NameServer();
     void VMregister( VendingMachine *vendingmachine );
     VendingMachine *    getMachine( unsigned int id );
-    VendingMachine **   getMachineList();
+    VendingMachine**    getMachineList();
 
-  private:
+    private:
     void main();
-    
+
     Printer& printer;
     const unsigned int numberOfStudents;
     const unsigned int numberOfVendingMachines;

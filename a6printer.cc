@@ -4,12 +4,12 @@
 #include <sstream>
 #include <string>
 
-Printer::Printer(   unsigned int numberOfStudents, 
-                    unsigned int numberOfVendingMachines, 
-                    unsigned int numberOfCouriers) :    numberOfStudents(numberOfStudents), 
-                                                        numberOfVendingMachines(numberOfVendingMachines), 
-                                                        numberOfCouriers(numberOfCouriers), 
-                                                        numberOfColumns(0) {
+Printer::Printer(   unsigned int numberOfStudents,
+                    unsigned int numberOfVendingMachines,
+                    unsigned int numberOfCouriers ) :    numberOfStudents( numberOfStudents ),
+                             numberOfVendingMachines( numberOfVendingMachines ),
+                             numberOfCouriers( numberOfCouriers ),
+numberOfColumns( 0 ) {
 
     columnForKind[Parent] = numberOfColumns++;
     std::cout << "Parent" << "\t";
@@ -27,23 +27,23 @@ Printer::Printer(   unsigned int numberOfStudents,
     std::cout << "Plant" << "\t";
 
     columnForKind[Student] = numberOfColumns;
-    for (unsigned int i = 0; i < numberOfStudents; ++i, ++numberOfColumns) {
+    for ( unsigned int i = 0; i < numberOfStudents; ++i, ++numberOfColumns ) {
         std::cout << "Stud" << i << "\t";
     }
 
     columnForKind[Vending] = numberOfColumns;
-    for (unsigned int i = 0; i < numberOfVendingMachines; ++i, ++numberOfColumns) {
+    for ( unsigned int i = 0; i < numberOfVendingMachines; ++i, ++numberOfColumns ) {
         std::cout << "Mach" << i << "\t";
     }
 
     columnForKind[Courier] = numberOfColumns;
-    for (unsigned int i = 0; i < numberOfCouriers; ++i, ++numberOfColumns) {
+    for ( unsigned int i = 0; i < numberOfCouriers; ++i, ++numberOfColumns ) {
         std::cout << "Cour" << i << "\t";
     }
 
     std::cout << std::endl;
-    
-    for (unsigned int i = 0; i < numberOfColumns; ++i) {
+
+    for ( unsigned int i = 0; i < numberOfColumns; ++i ) {
         std::cout << "*******" << "\t";
     }
     std::cout << std::endl;
@@ -55,46 +55,47 @@ Printer::~Printer() {
 }
 
 void Printer::print( Kind kind, char state ) {
-    print(kind, 0, state);
+    print( kind, 0, state );
 }
 
 void Printer::print( Kind kind, char state, int value1 ) {
-    print(kind, 0, state, value1);
+    print( kind, 0, state, value1 );
 }
 
 void Printer::print( Kind kind, char state, int value1, int value2 ) {
-    print(kind, 0, state, value1, value2);
+    print( kind, 0, state, value1, value2 );
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
-    printInfo(kind, lid, state, std::shared_ptr<Info>(new Info(kind, state)));
+    printInfo( kind, lid, state, std::shared_ptr<Info>( new Info( kind, state ) ) );
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
-    printInfo(kind, lid, state, std::shared_ptr<Info>(new ValueInfo(kind, state, value1)));
+    printInfo( kind, lid, state, std::shared_ptr<Info>( new ValueInfo( kind, state, value1 ) ) );
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
-    printInfo(kind, lid, state, std::shared_ptr<Info>(new ValuesInfo(kind, state, value1, value2)));
+    printInfo( kind, lid, state, std::shared_ptr<Info>( new ValuesInfo( kind, state, value1,
+               value2 ) ) );
 }
 
 void Printer::printInfo( Kind kind, unsigned int lid, char state, std::shared_ptr<Info> info ) {
     lid += columnForKind[kind];
-    if (state == 'F') {
-        printEverything("");
+    if ( state == 'F' ) {
+        printEverything( "" );
         currentInfoState[lid] = info;
-        printEverything("...");
-    } else if (currentInfoState.find(lid) != currentInfoState.end()) {
-        printEverything("");
-        currentInfoState[lid] = info; 
+        printEverything( "..." );
+    } else if ( currentInfoState.find( lid ) != currentInfoState.end() ) {
+        printEverything( "" );
+        currentInfoState[lid] = info;
     } else {
         currentInfoState[lid] = info;
     }
 }
 
-void Printer::printEverything(std::string placeholder){
-    for (unsigned int i = 0; i < numberOfColumns; i++) {
-        if (currentInfoState.find(i) != currentInfoState.end()) {
+void Printer::printEverything( std::string placeholder ) {
+    for ( unsigned int i = 0; i < numberOfColumns; i++ ) {
+        if ( currentInfoState.find( i ) != currentInfoState.end() ) {
             currentInfoState[i]->print();
         } else {
             std::cout << placeholder;
@@ -106,7 +107,7 @@ void Printer::printEverything(std::string placeholder){
     currentInfoState.clear();
 }
 
-Printer::Info::Info( Kind kind, char state ) : kind(kind), state(state) {
+Printer::Info::Info( Kind kind, char state ) : kind( kind ), state( state ) {
 }
 
 void Printer::Info::print() {
@@ -114,19 +115,19 @@ void Printer::Info::print() {
 }
 
 Printer::ValueInfo::ValueInfo( Kind kind, char state, int value )
-: Info(kind, state), value(value) {
+: Info( kind, state ), value( value ) {
 }
 
 void Printer::ValueInfo::print() {
     std::cout << state << value;
 }
 
-Printer::ValuesInfo::ValuesInfo(    Kind kind, 
-                                    char state, 
-                                    int value1, 
-                                    int value2 ) :  Info(kind, state), 
-                                                    value1(value1), 
-                                                    value2(value2) {
+Printer::ValuesInfo::ValuesInfo(    Kind kind,
+                                    char state,
+                                    int value1,
+                                    int value2 ) :  Info( kind, state ),
+value1( value1 ),
+value2( value2 ) {
 }
 
 void Printer::ValuesInfo::print() {
