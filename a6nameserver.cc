@@ -3,12 +3,12 @@
 
 #include <iostream>
 
-NameServer::NameServer( Printer& prt,
+NameServer::NameServer( Printer& prt, 
                         unsigned int numberOfVendingMachines,
-                        unsigned int numberOfStudents ) :   printer( prt ),
-                                 numberOfStudents( numberOfStudents ),
-                                 numberOfVendingMachines( numberOfVendingMachines ),
-machines( numberOfVendingMachines ) {
+                        unsigned int numberOfStudents ) : printer( prt ), 
+                                                          numberOfStudents( numberOfStudents ), 
+                                                          numberOfVendingMachines( numberOfVendingMachines ), 
+                                                          machines( numberOfVendingMachines ) {
 }
 
 NameServer::~NameServer() {

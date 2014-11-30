@@ -10,11 +10,11 @@ _Task NameServer;
 
 _Task Truck {
     public:
-    Truck(  Printer &prt,
-    NameServer &nameServer,
-    BottlingPlant &plant,
-    unsigned int numberOfVendingMachines,
-    unsigned int maxStockPerFlavour );
+    Truck( Printer &prt, 
+           NameServer &nameServer, 
+           BottlingPlant &plant, 
+           unsigned int numberOfVendingMachines, 
+           unsigned int maxStockPerFlavour );
     ~Truck();
     private:
     void main();

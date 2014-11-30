@@ -6,10 +6,10 @@
 
 Printer::Printer(   unsigned int numberOfStudents,
                     unsigned int numberOfVendingMachines,
-                    unsigned int numberOfCouriers ) :    numberOfStudents( numberOfStudents ),
-                             numberOfVendingMachines( numberOfVendingMachines ),
-                             numberOfCouriers( numberOfCouriers ),
-numberOfColumns( 0 ) {
+                    unsigned int numberOfCouriers ) : numberOfStudents( numberOfStudents ), 
+                                                      numberOfVendingMachines( numberOfVendingMachines ), 
+                                                      numberOfCouriers( numberOfCouriers ), 
+                                                      numberOfColumns( 0 ) {
 
     columnForKind[Parent] = numberOfColumns++;
     std::cout << "Parent" << "\t";
@@ -122,12 +122,12 @@ void Printer::ValueInfo::print() {
     std::cout << state << value;
 }
 
-Printer::ValuesInfo::ValuesInfo(    Kind kind,
-                                    char state,
-                                    int value1,
-                                    int value2 ) :  Info( kind, state ),
-value1( value1 ),
-value2( value2 ) {
+Printer::ValuesInfo::ValuesInfo( Kind kind, 
+                                 char state, 
+                                 int value1, 
+                                 int value2 ) : Info( kind, state ), 
+                                                value1( value1 ), 
+                                                value2( value2 ) {
 }
 
 void Printer::ValuesInfo::print() {

@@ -8,12 +8,11 @@ VendingMachine::VendingMachine( Printer& prt,
                                 NameServer& nameServer,
                                 unsigned int id,
                                 unsigned int sodaCost,
-                                unsigned int maxStockPerFlavour ) : printer( prt ),
-                                         nameServer( nameServer ),
-                                         id( id ),
-                                         sodaCost( sodaCost ),
-maxStockPerFlavour( maxStockPerFlavour ) {
-
+                                unsigned int maxStockPerFlavour ) : printer( prt ), 
+                                                                    nameServer( nameServer ), 
+                                                                    id( id ), 
+                                                                    sodaCost( sodaCost ), 
+                                                                    maxStockPerFlavour( maxStockPerFlavour ) {
     nameServer.VMregister( this );
     stock.fill( 0 );
 }

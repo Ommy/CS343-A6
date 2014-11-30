@@ -17,7 +17,7 @@ class A6 {
     std::string getCorrectUsage();
     void throwInvalidUsage( std::string usageString = "" );
 
-    public:
+public:
     A6( int argc, char** argv );
     ~A6();
     void run();
@@ -26,7 +26,7 @@ class A6 {
 };
 
 class CommandLineArgsException : public std::runtime_error {
-    public:
+public:
     CommandLineArgsException( std::string what ) : std::runtime_error( what ) {}
 };
 

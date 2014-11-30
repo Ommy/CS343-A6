@@ -8,10 +8,10 @@
 Parent::Parent( Printer& prt,
                 Bank& bank,
                 unsigned int numberOfStudents,
-                unsigned int parentalDelay ) :  printer( prt ),
-                         bank( bank ),
-                         numberOfStudents( numberOfStudents ),
-parentalDelay( parentalDelay ) {
+                unsigned int parentalDelay ) : printer( prt ), 
+                                               bank( bank ), 
+                                               numberOfStudents( numberOfStudents ), 
+                                               parentalDelay( parentalDelay ) {
 
 }
 

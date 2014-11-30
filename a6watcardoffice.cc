@@ -8,16 +8,15 @@
 WATCardOffice::WATCardOffice(   Printer& prt,
                                 Bank& bank,
                                 unsigned int numberOfCouriers ) : printer( prt ),
-                                         bank( bank ),
-                                         numberOfCouriers( numberOfCouriers ),
-couriers( numberOfCouriers ) {
+                                                                  bank( bank ), 
+                                                                  numberOfCouriers( numberOfCouriers ), 
+                                                                  couriers( numberOfCouriers ) {
 }
 
 WATCardOffice::~WATCardOffice() {
 }
 
-WATCard::FWATCard WATCardOffice::createJob( JobType type, unsigned int sid, unsigned int amount,
-        WATCard* card ) {
+WATCard::FWATCard WATCardOffice::createJob( JobType type, unsigned int sid, unsigned int amount, WATCard* card ) {
     WATCardOffice::Args arg( type, sid, amount, card );
     WATCardOffice::Job* job = new WATCardOffice::Job( arg );
     jobQueue.push_back( job );
@@ -76,20 +75,20 @@ void WATCardOffice::main() {
 WATCardOffice::Args::Args(  JobType type,
                             unsigned int sid,
                             unsigned amount,
-                            WATCard* card ) :   type( type ),
-sid( sid ),
-amount( amount ),
-card( card ) {
+                            WATCard* card ) : type( type ), 
+                                              sid( sid ), 
+                                              amount( amount ), 
+                                              card( card ) {
 
 }
 
 WATCardOffice::Courier::Courier( Printer& prt,
                                  Bank& bank,
                                  WATCardOffice& office,
-                                 unsigned int id ) : printer( prt ),
-bank( bank ),
-office( office ),
-id( id ) {
+                                 unsigned int id ) : printer( prt ), 
+                                                     bank( bank ), 
+                                                     office( office ), 
+                                                     id( id ) {
 
 }
 

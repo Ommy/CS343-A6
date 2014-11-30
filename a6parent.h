@@ -19,7 +19,7 @@ _Task Parent {
         Finish = 'F'
     };
 
-    public:
+public:
     Parent( Printer &prt, Bank &bank, unsigned int numberOfStudents, unsigned int parentalDelay );
     ~Parent();
 };

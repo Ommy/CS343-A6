@@ -10,7 +10,7 @@
 _Cormonitor Printer;
 
 _Task NameServer {
-    public:
+public:
     NameServer( Printer &prt,
     unsigned int numberOfVendingMachines,
     unsigned int numberOfStudents );
@@ -19,7 +19,7 @@ _Task NameServer {
     VendingMachine *    getMachine( unsigned int id );
     VendingMachine**    getMachineList();
 
-    private:
+private:
     void main();
 
     Printer& printer;

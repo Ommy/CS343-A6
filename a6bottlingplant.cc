@@ -9,13 +9,14 @@ BottlingPlant::BottlingPlant(   Printer& prt,
                                 unsigned int numberOfVendingMachines,
                                 unsigned int maxShippedPerFlavour,
                                 unsigned int maxStockPerFlavour,
-                                unsigned int timeBetweenShipments ) :   printer( prt ),
-                                         nameServer( nameServer ),
-                                         numberOfVendingMachines( numberOfVendingMachines ),
-                                         maxShippedPerFlavour( maxShippedPerFlavour ),
-                                         maxStockPerFlavour( maxStockPerFlavour ),
-                                         timeBetweenShipments( timeBetweenShipments ),
-shuttingDown( false ) {
+                                unsigned int timeBetweenShipments ) 
+                                    : printer( prt ), 
+                                      nameServer( nameServer ), 
+                                      numberOfVendingMachines( numberOfVendingMachines ), 
+                                      maxShippedPerFlavour( maxShippedPerFlavour ), 
+                                      maxStockPerFlavour( maxStockPerFlavour ), 
+                                      timeBetweenShipments( timeBetweenShipments ), 
+                                      shuttingDown( false ) {
     shipment.fill( 0 );
 }
 
@@ -46,8 +47,9 @@ void BottlingPlant::main() {
             shipment[i] = A6::mprng( maxShippedPerFlavour );
         }
 
-        printer.print( Printer::BottlingPlant, ( char )Generate, sum( std::begin( shipment ),
-                       std::end( shipment ) ) );
+        printer.print( Printer::BottlingPlant, 
+                       ( char )Generate, 
+                       sum( std::begin( shipment ), std::end( shipment ) ) );
 
         _Accept( ~BottlingPlant ) {
             shuttingDown = true;

@@ -50,52 +50,53 @@ void A6::run() {
                      configParams.numCouriers );
 
     Bank bank( configParams.numStudents );
-    std::unique_ptr<Parent> parent( new Parent(   printer,
-                                    bank,
-                                    configParams.numStudents,
-                                    configParams.parentalDelay ) );
+    std::unique_ptr<Parent> parent( new Parent( printer, 
+                                                bank, 
+                                                configParams.numStudents, 
+                                                configParams.parentalDelay ) );
 
     std::unique_ptr<WATCardOffice> office( new WATCardOffice( printer,
-                                           bank,
-                                           configParams.numCouriers ) );
-    std::unique_ptr<NameServer> nameServer( new NameServer(   printer,
-                                            configParams.numVendingMachines,
-                                            configParams.numStudents ) );
+                                                              bank, 
+                                                              configParams.numCouriers ) );
+
+    std::unique_ptr<NameServer> nameServer( new NameServer( printer, 
+                                                            configParams.numVendingMachines, 
+                                                            configParams.numStudents ) );
 
     std::deque<std::shared_ptr<VendingMachine>> vendingMachines( configParams.numVendingMachines );
 
-    for ( unsigned int i = 0; i < configParams.numVendingMachines; ++i ) {
-        vendingMachines[i] = std::shared_ptr<VendingMachine>( new VendingMachine( printer,
-                             *nameServer,
-                             i,
-                             configParams.sodaCost,
-                             configParams.maxStockPerFlavour ) );
+    for ( unsigned int mid = 0; mid < configParams.numVendingMachines; ++mid ) {
+        vendingMachines[mid] = std::shared_ptr<VendingMachine>( new VendingMachine( printer, 
+                                                                                  *nameServer, 
+                                                                                  mid, 
+                                                                                  configParams.sodaCost, 
+                                                                                  configParams.maxStockPerFlavour ) );
     }
 
-    std::unique_ptr<BottlingPlant> plant( new BottlingPlant(  printer,
-                                          *nameServer,
-                                          configParams.numVendingMachines,
-                                          configParams.maxShippedPerFlavour,
-                                          configParams.maxStockPerFlavour,
-                                          configParams.timeBetweenShipments ) );
+    std::unique_ptr<BottlingPlant> plant( new BottlingPlant( printer, 
+                                                             *nameServer, 
+                                                             configParams.numVendingMachines, 
+                                                             configParams.maxShippedPerFlavour, 
+                                                             configParams.maxStockPerFlavour, 
+                                                             configParams.timeBetweenShipments ) );
 
     std::deque<std::shared_ptr<Student>> students( configParams.numStudents );
-    for ( unsigned int i = 0; i < configParams.numStudents; ++i ) {
-        students[i] = std::shared_ptr<Student>( new Student( printer,
-                                                *nameServer,
-                                                *office,
-                                                i,
-                                                configParams.maxPurchases ) );
+    for ( unsigned int sid = 0; sid < configParams.numStudents; ++sid ) {
+        students[sid] = std::shared_ptr<Student>( new Student( printer, 
+                                                             *nameServer, 
+                                                             *office, 
+                                                             sid, 
+                                                             configParams.maxPurchases ) );
     }
 
-    for ( unsigned int i = 0; i < configParams.numStudents; ++i ) {
-        students[i].reset();
+    for ( unsigned int sid = 0; sid < configParams.numStudents; ++sid ) {
+        students[sid].reset();
     }
 
     plant.reset();
 
-    for ( unsigned int i = 0; i < configParams.numVendingMachines; ++i ) {
-        vendingMachines[i].reset();
+    for ( unsigned int mid = 0; mid < configParams.numVendingMachines; ++mid ) {
+        vendingMachines[mid].reset();
     }
 
     nameServer.reset();

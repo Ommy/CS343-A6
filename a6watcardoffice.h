@@ -32,9 +32,9 @@ _Task WATCardOffice {
     };
 
     _Task Courier {
-        public:
+    public:
         Courier( Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id );
-        private:
+    private:
         void main();
 
         Printer& printer;
@@ -67,7 +67,7 @@ _Task WATCardOffice {
         Finish = 'F'
     };
 
-    public:
+public:
     _Event Lost {};                        // lost WATCard
     WATCardOffice( Printer &prt, Bank &bank, unsigned int numberOfCouriers );
     ~WATCardOffice();

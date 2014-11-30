@@ -1,8 +1,8 @@
 #include "a6bank.h"
 
-Bank::Bank( unsigned int numberOfStudents ) :   numberOfStudents( numberOfStudents ),
-     bankAccounts( numberOfStudents, 0 ),
-notEnoughMoneyConditions( numberOfStudents ) {
+Bank::Bank( unsigned int numberOfStudents ) : numberOfStudents( numberOfStudents ), 
+                                              bankAccounts( numberOfStudents, 0 ), 
+                                              notEnoughMoneyConditions( numberOfStudents ) {
 }
 
 Bank::~Bank() {

@@ -31,14 +31,14 @@ _Cormonitor Printer {
         protected:
         const Kind kind;
         const char state;
-        public:
+    public:
         Info( Kind kind, char state );
         virtual void print();
     };
 
     class ValueInfo : public Info {
         const int value;
-        public:
+    public:
         ValueInfo( Kind kind, char state, int value );
         virtual void print();
     };
@@ -46,7 +46,7 @@ _Cormonitor Printer {
     class ValuesInfo : public Info {
         const int value1;
         const int value2;
-        public:
+    public:
         ValuesInfo( Kind kind, char state, int value1, int value2 );
         virtual void print();
     };

@@ -8,16 +8,16 @@
 #include <algorithm>
 #include <iostream>
 
-Truck::Truck(   Printer& prt,
-                NameServer& nameServer,
-                BottlingPlant& plant,
-                unsigned int numberOfVendingMachines,
-                unsigned int maxStockPerFlavour ) :  printer( prt ),
-                         server( nameServer ),
-                         bottlingPlant( plant ),
-                         numberOfVendingMachines( numberOfVendingMachines ),
-                         maxStockPerFlavour( maxStockPerFlavour ),
-cargo( VendingMachine::NUMBER_OF_FLAVOURS ) {
+Truck::Truck( Printer& prt, 
+              NameServer& nameServer, 
+              BottlingPlant& plant, 
+              unsigned int numberOfVendingMachines, 
+              unsigned int maxStockPerFlavour ) : printer( prt ), 
+                                                  server( nameServer ), 
+                                                  bottlingPlant( plant ), 
+                                                  numberOfVendingMachines( numberOfVendingMachines ), 
+                                                  maxStockPerFlavour( maxStockPerFlavour ), 
+                                                  cargo( VendingMachine::NUMBER_OF_FLAVOURS ) {
 }
 
 Truck::~Truck() {
@@ -43,7 +43,6 @@ void Truck::main() {
         unsigned int finalMachine = currentMachine;
         while ( true ) {
 
-            // only deliver if there is cargo
             if ( sum( cargo ) == 0 ) {
                 break;
             }
@@ -52,8 +51,7 @@ void Truck::main() {
 
             printer.print( Printer::Truck, ( char )Delivery, currentMachine, sum( cargo ) );
 
-            {
-                // check inventory of vending machine
+            {   // check inventory of vending machine
                 unsigned int* inventory = machines[currentMachine]->inventory();
                 for ( unsigned int flavour = 0; flavour < VendingMachine::NUMBER_OF_FLAVOURS; flavour++ ) {
                     unsigned int currentStock = inventory[flavour];

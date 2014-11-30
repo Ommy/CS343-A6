@@ -30,7 +30,7 @@ _Task BottlingPlant {
         Finish = 'F',
     };
 
-    public:
+public:
     _Event Shutdown {};
     BottlingPlant(  Printer &prt,
                     NameServer &nameServer,

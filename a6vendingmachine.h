@@ -10,7 +10,7 @@ _Cormonitor Printer;
 _Task NameServer;
 
 _Task VendingMachine {
-    public:
+public:
     enum Flavours {
         BLUE_BLACK_CHERRY = 0,
         CLASSICAL_CREAM_SODA,
@@ -31,7 +31,7 @@ _Task VendingMachine {
     void restocked();
     _Nomutex unsigned int cost();
     _Nomutex unsigned int getId();
-    private:
+private:
     enum State {
         InsufficientFunds,
         InsufficientStock,
