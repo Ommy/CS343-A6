@@ -9,10 +9,10 @@ _Cormonitor Printer;
 
 _Task Student {
     void main();
-    
-    Printer & printer;
-    NameServer & nameServer;
-    WATCardOffice & cardOffice;
+
+    Printer& printer;
+    NameServer& nameServer;
+    WATCardOffice& cardOffice;
     const unsigned int studentId;
     const unsigned int maxPurchases;
     static const unsigned int INITIAL_BALANCE = 5;
@@ -24,12 +24,12 @@ _Task Student {
         Lost = 'L',
         Finish = 'F'
     };
-    
-  public:
-    Student(    Printer &prt, 
-                NameServer &nameServer, 
-                WATCardOffice &cardOffice, 
-                unsigned int id, 
+
+    public:
+    Student(    Printer &prt,
+                NameServer &nameServer,
+                WATCardOffice &cardOffice,
+                unsigned int id,
                 unsigned int maxPurchases );
     ~Student();
 };

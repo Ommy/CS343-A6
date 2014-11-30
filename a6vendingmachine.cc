@@ -4,41 +4,40 @@
 
 #include <iostream>
 
-VendingMachine::VendingMachine( Printer &prt, 
-                                NameServer &nameServer, 
-                                unsigned int id, 
-                                unsigned int sodaCost, 
-                                unsigned int maxStockPerFlavour ) : printer(prt), 
-                                                                    nameServer(nameServer), 
-                                                                    id(id), 
-                                                                    sodaCost(sodaCost), 
-                                                                    maxStockPerFlavour(maxStockPerFlavour) {
-    
-    nameServer.VMregister(this);
-    stock.fill(0);
+VendingMachine::VendingMachine( Printer& prt,
+                                NameServer& nameServer,
+                                unsigned int id,
+                                unsigned int sodaCost,
+                                unsigned int maxStockPerFlavour ) : printer( prt ),
+                                         nameServer( nameServer ),
+                                         id( id ),
+                                         sodaCost( sodaCost ),
+maxStockPerFlavour( maxStockPerFlavour ) {
+
+    nameServer.VMregister( this );
+    stock.fill( 0 );
 }
 
-VendingMachine::BuyOrder::BuyOrder(   Flavours flavour, 
-                            WATCard& watcard ) :    flavour(flavour), 
-                                                    watcard(watcard),
-                                                    result(Success) 
-{
+VendingMachine::BuyOrder::BuyOrder(   Flavours flavour,
+                                      WATCard& watcard ) :    flavour( flavour ),
+watcard( watcard ),
+result( Success ) {
 }
 
-void VendingMachine::buy(Flavours flavour, WATCard &watcard ) {
-    order = std::shared_ptr<BuyOrder>(new BuyOrder(flavour, watcard));
+void VendingMachine::buy( Flavours flavour, WATCard& watcard ) {
+    order = std::shared_ptr<BuyOrder>( new BuyOrder( flavour, watcard ) );
     processOrderCondition.wait();
 
-    if (order->result == InsufficientFunds) {
+    if ( order->result == InsufficientFunds ) {
         uRendezvousAcceptor();
         throw Funds();
-    } else if (order->result == InsufficientStock) {
+    } else if ( order->result == InsufficientStock ) {
         uRendezvousAcceptor();
         throw Stock();
     }
 }
 
-unsigned int * VendingMachine::inventory() {
+unsigned int* VendingMachine::inventory() {
     return stock.data();
 }
 
@@ -54,34 +53,36 @@ unsigned int VendingMachine::getId() {
 }
 
 void VendingMachine::main() {
-    printer.print(Printer::Vending, id, (char)Start, sodaCost);
+    printer.print( Printer::Vending, id, ( char )Start, sodaCost );
 
-    while (true) {
-        _Accept(~VendingMachine) {
+    while ( true ) {
+        _Accept( ~VendingMachine ) {
             break;
-        } or _Accept( inventory ) {
-            printer.print(Printer::Vending, id, (char)StartReload);
-            _Accept(restocked) {
-                printer.print(Printer::Vending, id, (char)CompleteReload);
+        }
+        or _Accept( inventory ) {
+            printer.print( Printer::Vending, id, ( char )StartReload );
+            _Accept( restocked ) {
+                printer.print( Printer::Vending, id, ( char )CompleteReload );
             }
-        } or _Accept ( buy ) {
+        }
+        or _Accept ( buy ) {
             WATCard& watcard = order->watcard;
-            unsigned int flavour = static_cast<int>(order->flavour);
-            if (watcard.getBalance() < sodaCost) {
+            unsigned int flavour = static_cast<int>( order->flavour );
+            if ( watcard.getBalance() < sodaCost ) {
                 order->result = InsufficientFunds;
-            } else if (stock[flavour] == 0) {
+            } else if ( stock[flavour] == 0 ) {
                 order->result = InsufficientStock;
             } else {
-                watcard.withdraw(sodaCost);
+                watcard.withdraw( sodaCost );
                 stock[flavour] -= 1;
                 order->result = Success;
 
-                printer.print(Printer::Vending, id, (char)Bought, flavour, stock[flavour]);
+                printer.print( Printer::Vending, id, ( char )Bought, flavour, stock[flavour] );
             }
 
             processOrderCondition.signalBlock();
         }
     }
 
-    printer.print(Printer::Vending, id, (char)Finish);
+    printer.print( Printer::Vending, id, ( char )Finish );
 }

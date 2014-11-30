@@ -5,17 +5,18 @@
 #include <memory>
 
 _Cormonitor Printer {
-public:
-    enum Kind { Parent, 
-                WATCardOffice, 
-                NameServer, 
-                Truck, 
-                BottlingPlant, 
-                Student, 
-                Vending, 
-                Courier
+    public:
+    enum Kind {
+        Parent,
+        WATCardOffice,
+        NameServer,
+        Truck,
+        BottlingPlant,
+        Student,
+        Vending,
+        Courier
     };
-    
+
     Printer( unsigned int numberOfStudents, unsigned int numberOfVendingMachines, unsigned int numberOfCouriers );
     ~Printer();
     void print( Kind kind, char state );
@@ -25,19 +26,19 @@ public:
     void print( Kind kind, unsigned int lid, char state, int value1 );
     void print( Kind kind, unsigned int lid, char state, int value1, int value2 );
 
-private:
+    private:
     class Info {
-    protected:
+        protected:
         const Kind kind;
         const char state;
-    public:
+        public:
         Info( Kind kind, char state );
         virtual void print();
     };
 
     class ValueInfo : public Info {
         const int value;
-    public:
+        public:
         ValueInfo( Kind kind, char state, int value );
         virtual void print();
     };
@@ -45,14 +46,14 @@ private:
     class ValuesInfo : public Info {
         const int value1;
         const int value2;
-    public:
-        ValuesInfo( Kind kind, char state, int value1, int value2);
+        public:
+        ValuesInfo( Kind kind, char state, int value1, int value2 );
         virtual void print();
     };
 
     void main();
     void printInfo( Kind kind, unsigned int lid, char state, std::shared_ptr<Info> info );
-    void printEverything(std::string);
+    void printEverything( std::string );
 
     const unsigned int numberOfStudents;
     const unsigned int numberOfVendingMachines;

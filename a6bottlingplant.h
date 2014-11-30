@@ -30,13 +30,13 @@ _Task BottlingPlant {
         Finish = 'F',
     };
 
-  public:
+    public:
     _Event Shutdown {};
-    BottlingPlant(  Printer &prt, 
-                    NameServer &nameServer, 
-                    unsigned int numberOfVendingMachines, 
-                    unsigned int maxShippedPerFlavour, 
-                    unsigned int maxStockPerFlavour, 
+    BottlingPlant(  Printer &prt,
+                    NameServer &nameServer,
+                    unsigned int numberOfVendingMachines,
+                    unsigned int maxShippedPerFlavour,
+                    unsigned int maxStockPerFlavour,
                     unsigned int timeBetweenShipments );
     ~BottlingPlant();
     void getShipment( unsigned int cargo[] );

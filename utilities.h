@@ -20,11 +20,11 @@ bool convertToSignedInteger( int& val, char* buffer );
 bool convertToUnsignedInteger( unsigned int& val, char* buffer );
 
 template<class IT>
-unsigned int sum(IT start, IT end) {
-    return std::accumulate(start, end, 0);
+    unsigned int sum( IT start, IT end ) {
+    return std::accumulate( start, end, 0 );
 }
 unsigned int sum( const std::vector<unsigned int>& vector );
 unsigned int sum( const std::deque<unsigned int>& deque );
-unsigned int sum( const unsigned int* array, const unsigned int size);
+unsigned int sum( const unsigned int* array, const unsigned int size );
 
 #endif

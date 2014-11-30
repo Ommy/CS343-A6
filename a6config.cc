@@ -4,14 +4,14 @@
 #include <fstream>
 #include <limits>
 
-static bool comments( std::ifstream &in, std::string &name ) {
+static bool comments( std::ifstream& in, std::string& name ) {
     while ( true ) {
         in >> name;
         if ( in.fail() ) {
             return true;
         }
 
-        if ( name.substr(0,1) != "#" ) {
+        if ( name.substr( 0,1 ) != "#" ) {
             break;
         }
 
@@ -21,13 +21,13 @@ static bool comments( std::ifstream &in, std::string &name ) {
     return false;
 }
 
-void Config::processConfigFile( const char *configFile, ConfigParams &params ) {
+void Config::processConfigFile( const char* configFile, ConfigParams& params ) {
     const unsigned int Parmnum = 9;
     struct {
         const char* name;               // configuration name
         bool used;                  // already supplied ?
-        unsigned int &value;                // location to put configuration value
-    } 
+        unsigned int& value;                // location to put configuration value
+    }
 
     static parms[Parmnum] = {
         { "SodaCost", false, params.sodaCost },
@@ -55,19 +55,19 @@ void Config::processConfigFile( const char *configFile, ConfigParams &params ) {
             }
 
             for ( posn = 0; posn < Parmnum && name != parms[posn].name; posn += 1 ) {
-                // linear search  
-            } 
+                // linear search
+            }
 
             if ( posn == Parmnum ) {
                 break;         // configuration not found
             }
 
-            if ( parms[posn].used ) { 
+            if ( parms[posn].used ) {
                 break;        // duplicate configuration
             }
 
             in >> value;
-            if ( in.fail() ) { 
+            if ( in.fail() ) {
                 break;
             }
 
@@ -89,6 +89,6 @@ void Config::processConfigFile( const char *configFile, ConfigParams &params ) {
 
     } catch( uFile::Failure ) {
         std::cerr << "Error: could not open input file \"" << configFile << "\"" << std::endl;
-        exit( EXIT_FAILURE );    
+        exit( EXIT_FAILURE );
     }
 }

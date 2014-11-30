@@ -3,56 +3,58 @@
 
 #include <iostream>
 
-NameServer::NameServer( Printer &prt, 
-                        unsigned int numberOfVendingMachines, 
-                        unsigned int numberOfStudents ) :   printer(prt), 
-                                                            numberOfStudents(numberOfStudents), 
-                                                            numberOfVendingMachines(numberOfVendingMachines), 
-                                                            machines(numberOfVendingMachines)
-{
+NameServer::NameServer( Printer& prt,
+                        unsigned int numberOfVendingMachines,
+                        unsigned int numberOfStudents ) :   printer( prt ),
+                                 numberOfStudents( numberOfStudents ),
+                                 numberOfVendingMachines( numberOfVendingMachines ),
+machines( numberOfVendingMachines ) {
 }
 
-NameServer::~NameServer(){
+NameServer::~NameServer() {
 }
 
-void NameServer::VMregister( VendingMachine *vendingmachine ) {
+void NameServer::VMregister( VendingMachine* vendingmachine ) {
     machines[vendingmachine->getId()] = vendingmachine;
-    machinesRegistered.push_back(vendingmachine->getId());
+    machinesRegistered.push_back( vendingmachine->getId() );
 
-    printer.print(Printer::NameServer, (char)Register, vendingmachine->getId());
+    printer.print( Printer::NameServer, ( char )Register, vendingmachine->getId() );
 }
 
-VendingMachine * NameServer::getMachine( unsigned int sid ) {
+VendingMachine* NameServer::getMachine( unsigned int sid ) {
     unsigned int currentMachineId = machineUsedByStudent[sid];
 
     // cycle through next machines to retrieve for this student
-    machineUsedByStudent[sid] = (currentMachineId + 1) % numberOfVendingMachines;
-    
+    machineUsedByStudent[sid] = ( currentMachineId + 1 ) % numberOfVendingMachines;
+
     VendingMachine* currentMachine = machines[currentMachineId];
-    printer.print(Printer::NameServer, (char)New, sid, currentMachine->getId());
+    printer.print( Printer::NameServer, ( char )New, sid, currentMachine->getId() );
     return currentMachine;
 }
 
-VendingMachine ** NameServer::getMachineList() {
+VendingMachine** NameServer::getMachineList() {
     return machines.data();
 }
 
 void NameServer::main() {
-    printer.print(Printer::NameServer, (char)Start);
+    printer.print( Printer::NameServer, ( char )Start );
 
-    while (true) {
-        _Accept (~NameServer) {
+    while ( true ) {
+        _Accept ( ~NameServer ) {
             break;
-        } or _When(machinesRegistered.size() < numberOfVendingMachines) _Accept ( VMregister ) {
-            if (machinesRegistered.size() == numberOfVendingMachines) {
-                for (unsigned int sid = 0; sid < numberOfStudents; ++sid) {
-                    machineUsedByStudent[sid] = machinesRegistered[(sid % numberOfVendingMachines)];
+        }
+        or _When( machinesRegistered.size() < numberOfVendingMachines ) _Accept ( VMregister ) {
+            if ( machinesRegistered.size() == numberOfVendingMachines ) {
+                for ( unsigned int sid = 0; sid < numberOfStudents; ++sid ) {
+                    machineUsedByStudent[sid] = machinesRegistered[( sid % numberOfVendingMachines )];
                 }
             }
-        } or _When(machinesRegistered.size() == numberOfVendingMachines) _Accept ( getMachine, getMachineList ) {
+        }
+        or _When( machinesRegistered.size() == numberOfVendingMachines ) _Accept ( getMachine,
+                getMachineList ) {
 
         }
     }
-    
-    printer.print(Printer::NameServer, (char)Finish);
+
+    printer.print( Printer::NameServer, ( char )Finish );
 }
